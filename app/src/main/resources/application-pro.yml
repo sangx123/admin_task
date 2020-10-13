@@ -1,0 +1,72 @@
+#公共配置
+server:
+  port: 8081
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://39.105.172.56:3306/task_sys?characterEncoding=UTF-8&serverTimezone=CTT
+    username: root
+    password: Sx828221*#
+
+  redis:
+    cluster:
+      #nodes: 188.131.235.188:7000,188.131.235.188:7001,188.131.235.188:7002,188.131.235.188:7003,188.131.235.188:7004,188.131.235.188:7005
+      #nodes: 39.105.172.56:7001,39.105.172.56:7002,39.105.172.56:7003,39.105.172.56:7004,39.105.172.56:7005,39.105.172.56:7006
+      nodes: 127.0.0.1:7001,127.0.0.1:7002,127.0.0.1:7003,127.0.0.1:7004,127.0.0.1:7005,127.0.0.1:7006
+    password:
+
+#mybatis的配置
+mybatis:
+  mapper-locations: classpath*:com/sangxiang/dao/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+
+#通用mapper
+mapper:
+  mappers:
+    - com.sangxiang.base.mapper.MyMapper
+  not-empty: false
+  identity: MYSQL
+
+#分页插件
+pagehelper:
+  helperDialect: mysql
+  reasonable: false
+  supportMethodsArguments: true
+  params: count=countSql
+
+#logback日志配置
+logging:
+  config: classpath:logback-base.xml
+  path: logs
+
+  # 自定义文件上传路径
+  #upload-image-path : c:/images/
+upload:
+  #window服务器上的路径
+  #imagePath:  C:/Users/sangxiang/Downloads/nginx-1.15.10/nginx-1.15.10/html/images/
+  #mac上的路径
+  #imagePath: /Users/sangxiang/Desktop/web/
+  #linux服务器上的路径
+  imagePath: /usr/local/nginx/html/
+
+  #正式服务器上的图片路径
+  imageURL: http://39.105.172.56/
+
+  #mac上的本地路径
+
+
+#ali_return_url: 同步回调地址
+#ali_notify_url: http://39.105.172.56/api/task/getNotifyUrlInfo
+#
+##销售产品码，商家和支付宝签约的产品码，为固定值QUICK_MSECURITY_PAY.业务参数,拼接时放在biz_content中
+#ali_product_code: QUICK_MSECURITY_PAY
+#
+##该笔订单允许的最晚付款时间，逾期将关闭交易。
+#ali_timeout_express: 30m
+#ali_url: https://openapi.alipay.com/gateway.do
+#ali_appid: 2021001196685328
+#ali_private_key: MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC8SNhvp+TGiUTISVq57qgliflJEnD06ObTliOYen5spFmiv8lzKfbL63c0S9hR1I3TG1J/GeSsDQ4fHoa1oQ/N4CIgINu//J5xqqbgA2To5cBeMwfV57dG+DBUMDXAX/uCqzhKUDIQEy0/lZsDIEg3APl/iOuAvIvZ0Dwhg41QycQArCuMeNdCt4Z44vYF/6MOPuVwgxVuMCJmrv9Drhay6c04hJKuRaCOReuLuRcLU+fwc0cjXD1gx9cCxqIJ8zHAvh78PCnqPVERJUFTIwe14RaD8pmELRVNhQxw2FHDzGf+s6LJ8Z9c3PjMrHAL2wMbGyZreD7YsEy8RKSYAfsPAgMBAAECggEBAJemEHU2BASIcRbkRie1ekbp7xeUu9f2clv+9GKOXp9AbFWyJR4VsYqi91rur6eRDD35JqPqhgyxYytbWeKWe/U0zieUb4odfLxOV6Pb9/3BdwQoE+qMfEi0A7D7N3/fjuK651aravcZivtIkxacfK2Yolu/OvdwZS+lEZlorHxg8rPiU3sUPB7PuGSQ4iTt2ulZ0TmLGS2fHPXVkogfbSomn3QXuHAMfEKmBYljTUU3zjqSx6CmNPPOTXdsN9vslQYNtjshbkIMp2bjwi2pAi8jZAJ5oJAtMt0swFMjF5WLGy7rsU+q2cozJFsG+XNgpXIOJxKymS7rbcc4Spl+RLkCgYEA8W007KLTLElOAEXKzjx6WOzvKxG3aN0jWHsgqIClMVsOJiSsk6yNc1TlcJufMe6SWQYKRyBMm9c+EiA6XFyL9TlW1Qvmhgy+Av4IjAUjp8S3e4e2RYlQ+mxUxGNiofNoh8qzFWK7NtQEDGJ3jlj3gan8iM0YHUkZevCiND3WSa0CgYEAx6ZtuoJsjg8lLJKe6kSA5DqJcYTNaqJS4YjM7y9QH9lhJaQSrUhlmLdA8g2qrLrrYF/iLEKQ4vn07OwBtw/FWSjQIvnMWmgo/qBdFcB6R98YEA/HCyt9kj9cOUBXqt+wJ9/QYeSv+Qf3qgE/xGsf80i92IQf8tbzr6d0R1y7ZysCgYEAuj4xzr8JQyfFqYYtno2fIIyfME15fMbjZnWNyw964ClLL/eovj8l26vJV+Zll8JgWZbERPxQvQP92UPNYcTvHxy9tJp6mjyoNGy+MS4hxGGH3h7iaKA2vQjnF51H0IGSyPaA0mWY4QILoXYwnrpZLUjyDKKTELx8kI+jwcNWVP0CgYA7Ys/k2IK9xteB6KMIgBPuz1Kux5fqjholJ/H9e49Tye9RqPo9PPmrcWcKGPKZqof1BNBb5fj+6ublylXARBqpqLAwlykoAy+efcjyfWxiEIQx0t+b/PW/GMWv6emp1Bur4LE1TTbi1nHeybxUCqFYVlzSGIsAStv1ddPqnjTIPQKBgBJUMJyRFfFPIbJGilm85Brmqx+nIrYVf+gCVO28/aaw0FqsamgWZjRcxVzmxQAm+XDUkGZYMqAnp8KhxU1/r4G7jCVDA6C+dMZo1CGbFYvpn7smxGv53lBHJQYPEoYfnhF2NO0MupOUl2oCurS/gyOGEXhm4zr6felvfGnfXJVv
+#ali_public_key: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAg56rCOawu3nB11n8pca49zP2ryrdlp3tI/yqn6KyUwKqZs8lMQ30qy/NnWZr2/2UrdhGBtnfPGrwCyb6DFVasQK8k/c3smiv04xOvlbFAXJr4FOaTdlgxwJnhIgFfHZrNrVNzm6/G9SpvLg5bhLArFFshq6e8fS/q8kKWI290me2VRZKjGMOzUZ1uLBcuqcVmJcuUQQBGRP08YBUu3XmWvfIXgN9NGXH6NYFdhgSK2/rKw0kY9V8P1+wl/Q43NZrL8rIRfjQUwJimbZ8D4TvQj0r1btAg1iRcAzsP1GRAlBVEzS2IrfQ77lKNw0nU8ngkINlEwI7Q1TtOD19H/73WQIDAQAB
+#ali_sign_type: RSA2

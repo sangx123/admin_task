@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sangxiang.dao.mapper.AliNotifyMapper" >
+  <resultMap id="BaseResultMap" type="com.sangxiang.dao.model.AliNotify" >
+    <result column="notify_id" property="notifyId" jdbcType="VARCHAR" />
+    <result column="notify_time" property="notifyTime" jdbcType="VARCHAR" />
+    <result column="notify_type" property="notifyType" jdbcType="VARCHAR" />
+    <result column="app_id" property="appId" jdbcType="VARCHAR" />
+    <result column="charset" property="charset" jdbcType="VARCHAR" />
+    <result column="version" property="version" jdbcType="VARCHAR" />
+    <result column="sign_type" property="signType" jdbcType="VARCHAR" />
+    <result column="trade_no" property="tradeNo" jdbcType="VARCHAR" />
+    <result column="out_trade_no" property="outTradeNo" jdbcType="VARCHAR" />
+    <result column="out_biz_no" property="outBizNo" jdbcType="VARCHAR" />
+    <result column="buyer_id" property="buyerId" jdbcType="VARCHAR" />
+    <result column="buyer_logon_id" property="buyerLogonId" jdbcType="VARCHAR" />
+    <result column="seller_id" property="sellerId" jdbcType="VARCHAR" />
+    <result column="seller_email" property="sellerEmail" jdbcType="VARCHAR" />
+    <result column="trade_status" property="tradeStatus" jdbcType="VARCHAR" />
+    <result column="total_amount" property="totalAmount" jdbcType="VARCHAR" />
+    <result column="receipt_amount" property="receiptAmount" jdbcType="VARCHAR" />
+    <result column="invoice_amount" property="invoiceAmount" jdbcType="VARCHAR" />
+    <result column="buyer_pay_amount" property="buyerPayAmount" jdbcType="VARCHAR" />
+    <result column="point_amount" property="pointAmount" jdbcType="VARCHAR" />
+    <result column="refund_fee" property="refundFee" jdbcType="VARCHAR" />
+    <result column="subject" property="subject" jdbcType="VARCHAR" />
+    <result column="body" property="body" jdbcType="VARCHAR" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="VARCHAR" />
+    <result column="gmt_payment" property="gmtPayment" jdbcType="VARCHAR" />
+    <result column="gmt_refund" property="gmtRefund" jdbcType="VARCHAR" />
+    <result column="fund_bill_list" property="fundBillList" jdbcType="VARCHAR" />
+    <result column="passback_params" property="passbackParams" jdbcType="VARCHAR" />
+    <result column="voucher_detail_list" property="voucherDetailList" jdbcType="VARCHAR" />
+    <result column="id" property="id" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.sangxiang.dao.model.AliNotify" extends="BaseResultMap" >
+    <result column="sign" property="sign" jdbcType="LONGVARCHAR" />
+  </resultMap>
+</mapper>
