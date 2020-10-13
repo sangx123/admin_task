@@ -17,14 +17,8 @@ import com.sangxiang.app.sdk.token.UserTokenManager;
 import com.sangxiang.app.utils.AppResult;
 import com.sangxiang.app.utils.StringUtils;
 import com.sangxiang.base.rest.ApiResult;
-import com.sangxiang.dao.model.AliNotify;
-import com.sangxiang.dao.model.SysUser;
-import com.sangxiang.dao.model.Task;
-import com.sangxiang.dao.model.UserTask;
-import com.sangxiang.dao.service.AliNotifyService;
-import com.sangxiang.dao.service.SysUserService;
-import com.sangxiang.dao.service.TaskService;
-import com.sangxiang.dao.service.UserTaskService;
+import com.sangxiang.dao.model.*;
+import com.sangxiang.dao.service.*;
 import com.sangxiang.model.ApplyTaskParam;
 import com.sangxiang.model.Login.HomeTaskParam;
 import com.sangxiang.model.Task.TaskItem;
@@ -98,6 +92,9 @@ public class TaskController extends AppBaseController {
 
     @Autowired
     AliNotifyService aliNotifyService;
+
+    @Autowired
+    TaskMainTypeService taskMainTypeService;
     /**
      * 创建任务
      * @param files
@@ -530,5 +527,14 @@ public class TaskController extends AppBaseController {
              log.error(e.getMessage());
              throw new RuntimeException("IO发生异常");
         }
+    }
+
+
+    @PostMapping(value = "/getTaskMainType")
+    @ApiOperation(value="获取任务一级分类")
+    public AppResult<List<TaskMainTyle>> getTaskMainType(@RequestHeader("userToken") String userToken){
+        int userId = UserTokenManager.getInstance().getUserIdFromToken(userToken).intValue();
+        List<TaskMainTyle> list= taskMainTypeService.getAllTaskMainType();
+        return success(list);
     }
 }
