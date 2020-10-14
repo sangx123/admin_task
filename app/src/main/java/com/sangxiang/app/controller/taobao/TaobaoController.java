@@ -56,7 +56,7 @@ public class TaobaoController extends AppBaseController {
     @PostMapping(value = "/getTaoBaoHomeTask")
     @ApiOperation(value="淘宝任务大厅")
     public AppResult<PageInfo<TaobaoTask>> getTaoBaoHomeTask(@RequestBody HomeTaskParam param){
-        PageInfo<TaobaoTask> taobaoTaskList= taobaoTaskService.findPage(param.getPageNumber(),param.getPageSize(),param.getState());
+        PageInfo<TaobaoTask> taobaoTaskList= taobaoTaskService.findPage(param.getPageNumber(),param.getPageSize(),param.getStatus());
         return success(taobaoTaskList);
     }
 

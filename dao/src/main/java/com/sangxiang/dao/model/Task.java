@@ -15,7 +15,7 @@ public class Task extends BaseEntity {
 
     private Integer userid;
 
-    private Date createTime;
+    private String createTime;
 
     private String title;
 
@@ -23,11 +23,25 @@ public class Task extends BaseEntity {
 
     private BigDecimal workerPrice;
 
-    private Integer state;
-
-    private String username;
-
     private Integer needpeoplenum;
+
+    private Integer payStatus;
+
+    private Integer status;
+
+    private BigDecimal needtotalpay;
+
+    private Integer typeid;
+
+    private String taskLimit;
+
+    private String applyEndTime;
+
+    private String workEndTime;
+
+    private Integer aduitTime;
+
+    private String orderid;
 
     public Integer getId() {
         return id;
@@ -45,12 +59,12 @@ public class Task extends BaseEntity {
         this.userid = userid;
     }
 
-    public Date getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime == null ? null : createTime.trim();
     }
 
     public String getTitle() {
@@ -77,27 +91,83 @@ public class Task extends BaseEntity {
         this.workerPrice = workerPrice;
     }
 
-    public Integer getState() {
-        return state;
-    }
-
-    public void setState(Integer state) {
-        this.state = state;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username == null ? null : username.trim();
-    }
-
     public Integer getNeedpeoplenum() {
         return needpeoplenum;
     }
 
     public void setNeedpeoplenum(Integer needpeoplenum) {
         this.needpeoplenum = needpeoplenum;
+    }
+
+    public Integer getPayStatus() {
+        return payStatus;
+    }
+
+    public void setPayStatus(Integer payStatus) {
+        this.payStatus = payStatus;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public BigDecimal getNeedtotalpay() {
+        return needtotalpay;
+    }
+
+    public void setNeedtotalpay(BigDecimal needtotalpay) {
+        this.needtotalpay = needtotalpay;
+    }
+
+    public Integer getTypeid() {
+        return typeid;
+    }
+
+    public void setTypeid(Integer typeid) {
+        this.typeid = typeid;
+    }
+
+    public String getTaskLimit() {
+        return taskLimit;
+    }
+
+    public void setTaskLimit(String taskLimit) {
+        this.taskLimit = taskLimit == null ? null : taskLimit.trim();
+    }
+
+    public String getApplyEndTime() {
+        return applyEndTime;
+    }
+
+    public void setApplyEndTime(String applyEndTime) {
+        this.applyEndTime = applyEndTime == null ? null : applyEndTime.trim();
+    }
+
+    public String getWorkEndTime() {
+        return workEndTime;
+    }
+
+    public void setWorkEndTime(String workEndTime) {
+        this.workEndTime = workEndTime == null ? null : workEndTime.trim();
+    }
+
+    public Integer getAduitTime() {
+        return aduitTime;
+    }
+
+    public void setAduitTime(Integer aduitTime) {
+        this.aduitTime = aduitTime;
+    }
+
+    public String getOrderid() {
+        return orderid;
+    }
+
+    public void setOrderid(String orderid) {
+        this.orderid = orderid == null ? null : orderid.trim();
     }
 }

@@ -22,6 +22,7 @@ import com.sangxiang.dao.service.*;
 import com.sangxiang.model.ApplyTaskParam;
 import com.sangxiang.model.Login.HomeTaskParam;
 import com.sangxiang.model.Task.TaskItem;
+import com.sangxiang.util.DateUtils;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,7 +101,6 @@ public class TaskController extends AppBaseController {
      * @param files
      * @param content
      * @param title
-     * @param benJing
      * @param jiangLi
      * @param peopleNum
      * @return
@@ -110,10 +110,13 @@ public class TaskController extends AppBaseController {
                                         @RequestParam(value = "imageList[]") MultipartFile files[],
                                         String content,//内容
                                         String title ,//标题
-                                        String benJing,//本金
                                         String jiangLi,//奖励
                                         String peopleNum,//任务人数
-                                        String type//任务类型
+                                        int type,//任务类型,
+                                        String apply_end_time,//任务申请截止时间
+                                        String work_end_time,//提交任务截止时间
+                                        String limit
+
     ) {
         int userId = UserTokenManager.getInstance().getUserIdFromToken(userToken).intValue();
         List<String> imageUrlList = new ArrayList<String>();
@@ -182,14 +185,17 @@ public class TaskController extends AppBaseController {
         Task task=new Task();
         task.setTitle(title);
         task.setContent(content);
-        task.setCreateTime(new Date());
+        task.setCreateTime(DateUtils.format(new Date(),DateUtils.DATE_TIME_PATTERN));
         task.setUserid(userId);
+        task.setTypeid(type);
+        task.setTaskLimit(limit);
+        task.setWorkEndTime(work_end_time);
+        task.setApplyEndTime(apply_end_time);
+
         task.setWorkerPrice(new BigDecimal(jiangLi));
         task.setNeedpeoplenum(Integer.valueOf(peopleNum));
-        task.setState(0);
-        SysUser sysUser=sysUserService.queryUser(userId);
-        task.setUsername(sysUser.getMobile());
-        taskService.createTask(task);
+        task.setStatus(0);
+
         //创建支付订单
         //实例化客户端
         AlipayClient alipayClient = new DefaultAlipayClient(alipayUrl, alipayAppID, alipayPrivateKey, "json", "UTF-8", alipayPublicKey, alipaySignType);
@@ -213,6 +219,12 @@ public class TaskController extends AppBaseController {
             //这里和普通的接口调用不同，使用的是sdkExecute
             AlipayTradeAppPayResponse response = alipayClient.sdkExecute(request);
             System.out.println(response.getBody());//就是orderString 可以直接给客户端请求，无需再做处理。
+            //在真正生成订单的时候才创建任务
+            task.setOrderid(tradeNo);
+            task.setNeedtotalpay(new BigDecimal(task.getWorkerPrice().doubleValue() * task.getNeedpeoplenum().doubleValue()));
+            task.setPayStatus(0);
+            task.setAduitTime(2);
+            taskService.createTask(task);
             return success(response.getBody());
         } catch (AlipayApiException e) {
             e.printStackTrace();
@@ -237,7 +249,7 @@ public class TaskController extends AppBaseController {
     @PostMapping(value = "/getHomeTaskList")
     @ApiOperation(value="任务大厅任务")
     public AppResult<PageInfo<Task>> getHomeTaskList(@RequestBody HomeTaskParam param){
-        PageInfo<Task> pageInfo= taskService.findPage(param.getPageNumber(),param.getPageSize(),param.getState());
+        PageInfo<Task> pageInfo= taskService.findPage(param.getPageNumber(),param.getPageSize(),param.getStatus());
         for(int i=0;i<pageInfo.getList().size();i++){
             Task item=pageInfo.getList().get(i);
             List<String> list=new ArrayList<>();
@@ -260,7 +272,7 @@ public class TaskController extends AppBaseController {
     @ApiOperation(value="我发布的任务列表")
     public AppResult<PageInfo<Task>> getMyPublishTaskList(@RequestHeader("userToken") String userToken,@RequestBody HomeTaskParam param){
         int userId = UserTokenManager.getInstance().getUserIdFromToken(userToken).intValue();
-        PageInfo<Task> pageInfo= taskService.findAllUserPublishTaskList(param.getPageNumber(),param.getPageSize(),userId,param.getState());
+        PageInfo<Task> pageInfo= taskService.findAllUserPublishTaskList(param.getPageNumber(),param.getPageSize(),userId,param.getStatus());
         for(int i=0;i<pageInfo.getList().size();i++){
             Task item=pageInfo.getList().get(i);
             List<String> list=new ArrayList<>();
@@ -286,7 +298,7 @@ public class TaskController extends AppBaseController {
         Task task=  taskService.queryById(param.getTaskid());
 
         //首先判断该任务是否结束
-        if(task.getState()==1){
+        if(task.getStatus()==1){
             return fail(AppExecStatus.FAIL,"任务已结束或者关闭");
         }
 

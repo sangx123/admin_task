@@ -3,15 +3,7 @@ package com.sangxiang.model.Login;
 public class HomeTaskParam {
     private Integer pageSize = 10;
     private Integer pageNumber = 1;
-    private Integer state = 0;
-
-    public Integer getState() {
-        return state;
-    }
-
-    public void setState(Integer state) {
-        this.state = state;
-    }
+    private Integer status = 1;
 
     public Integer getPageNumber() {
         return pageNumber;
@@ -27,5 +19,13 @@ public class HomeTaskParam {
 
     public void setPageSize(Integer pageSize) {
         this.pageSize = pageSize;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 }

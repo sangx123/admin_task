@@ -1,42 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sangxiang.dao.mapper.TaskMapper">
-  <resultMap id="BaseResultMap" type="com.sangxiang.dao.model.Task">
-      <result column="id" property="id" jdbcType="INTEGER" />
-      <result column="userid" property="userid" jdbcType="INTEGER" />
-      <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
-      <result column="title" property="title" jdbcType="VARCHAR" />
-      <result column="content" property="content" jdbcType="VARCHAR" />
-      <result column="worker_price" property="workerPrice" jdbcType="DECIMAL" />
-      <result column="state" property="state" jdbcType="INTEGER" />
-      <result column="username" property="username" jdbcType="VARCHAR" />
-      <result column="needPeopleNum" property="needpeoplenum" jdbcType="INTEGER" />
-  </resultMap>
+    <resultMap id="BaseResultMap" type="com.sangxiang.dao.model.Task" >
+        <result column="id" property="id" jdbcType="INTEGER" />
+        <result column="userid" property="userid" jdbcType="INTEGER" />
+        <result column="create_time" property="createTime" jdbcType="VARCHAR" />
+        <result column="title" property="title" jdbcType="VARCHAR" />
+        <result column="content" property="content" jdbcType="VARCHAR" />
+        <result column="worker_price" property="workerPrice" jdbcType="DECIMAL" />
+        <result column="needPeopleNum" property="needpeoplenum" jdbcType="INTEGER" />
+        <result column="pay_status" property="payStatus" jdbcType="INTEGER" />
+        <result column="status" property="status" jdbcType="INTEGER" />
+        <result column="needTotalPay" property="needtotalpay" jdbcType="DECIMAL" />
+        <result column="typeId" property="typeid" jdbcType="INTEGER" />
+        <result column="task_limit" property="taskLimit" jdbcType="VARCHAR" />
+        <result column="apply_end_time" property="applyEndTime" jdbcType="VARCHAR" />
+        <result column="work_end_time" property="workEndTime" jdbcType="VARCHAR" />
+        <result column="aduit_time" property="aduitTime" jdbcType="INTEGER" />
+        <result column="orderId" property="orderid" jdbcType="VARCHAR" />
+    </resultMap>
 
   <select id="queryById" parameterType="int" resultType="com.sangxiang.dao.model.Task">
         select * from task where id = #{value}
     </select>
   <select id="getShanhuTask"  resultType="com.sangxiang.dao.model.Task">
-        select * from task where userid = #{userid} AND state=#{state}
+        select * from task where userid = #{userid} AND status=#{status}
     </select>
 
   <select id="getEnableTask"  resultType="com.sangxiang.dao.model.Task">
        SELECT * from
-        task where state=0
+        task where status=1
         order
         by create_time desc
     </select>
 
     <select id="getUserPublishTask"  resultType="com.sangxiang.dao.model.Task">
        SELECT * from
-        task where userid = #{userid} AND state=#{state}
+        task where userid = #{userid} AND status=#{status}
         order
         by create_time desc
     </select>
 
     <select id="getAllUserPublishTask"  resultType="com.sangxiang.dao.model.Task">
        SELECT * from
-        task where userid = #{userid} AND state=#{state}
+        task where userid = #{userid} AND status=#{status}
         order
         by create_time desc
     </select>
