@@ -22,6 +22,7 @@ import com.sangxiang.dao.service.*;
 import com.sangxiang.model.ApplyTaskParam;
 import com.sangxiang.model.Login.HomeTaskParam;
 import com.sangxiang.model.Task.TaskItem;
+import com.sangxiang.model.Task.TaskParam;
 import com.sangxiang.util.DateUtils;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.io.FileUtils;
@@ -548,5 +549,14 @@ public class TaskController extends AppBaseController {
         int userId = UserTokenManager.getInstance().getUserIdFromToken(userToken).intValue();
         List<TaskMainTyle> list= taskMainTypeService.getAllTaskMainType();
         return success(list);
+    }
+
+
+    @PostMapping(value = "/getTaskById")
+    @ApiOperation(value="获取任务详情")
+    public AppResult<Task> getTaskById(@RequestHeader("userToken") String userToken, @RequestBody TaskParam taskParam){
+        int userId = UserTokenManager.getInstance().getUserIdFromToken(userToken).intValue();
+        Task model= taskService.queryById(taskParam.getId());
+        return success(model);
     }
 }

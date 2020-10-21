@@ -5,6 +5,7 @@ import com.sangxiang.base.model.BaseEntity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -28,6 +29,11 @@ public class Task extends BaseEntity {
     private Integer payStatus;
 
     private Integer status;
+    @Transient
+    private Integer hasApplyedPeopleNum;//有多少人申请
+
+    @Transient
+    private Integer hasApplyedAndAuditPassPeopleNum;//已申请通过多少人
 
     private BigDecimal needtotalpay;
 
@@ -169,5 +175,21 @@ public class Task extends BaseEntity {
 
     public void setOrderid(String orderid) {
         this.orderid = orderid == null ? null : orderid.trim();
+    }
+
+    public Integer getHasApplyedPeopleNum() {
+        return hasApplyedPeopleNum;
+    }
+
+    public void setHasApplyedPeopleNum(Integer hasApplyedPeopleNum) {
+        this.hasApplyedPeopleNum = hasApplyedPeopleNum;
+    }
+
+    public Integer getHasApplyedAndAuditPassPeopleNum() {
+        return hasApplyedAndAuditPassPeopleNum;
+    }
+
+    public void setHasApplyedAndAuditPassPeopleNum(Integer hasApplyedAndAuditPassPeopleNum) {
+        this.hasApplyedAndAuditPassPeopleNum = hasApplyedAndAuditPassPeopleNum;
     }
 }
