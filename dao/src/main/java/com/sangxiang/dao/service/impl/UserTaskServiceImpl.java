@@ -30,18 +30,18 @@ import java.util.List;
         //task.setWorkerNum(task.getWorkerNum()-1);
         //taskMapper.updateByPrimaryKey(task);
         UserTask userTask=new UserTask();
-        userTask.setTaskid(task.getId());
-        userTask.setUserid(user.getId());
-        userTask.setState(0);
+        userTask.setBusinessTaskId(task.getId());
+        userTask.setUserId(user.getId());
+        userTask.setUserTaskStatus(0);
         userTaskMapper.insertUseGeneratedKeys(userTask);
     }
 
     @Override
     public void createUserTask(BusinessTask task, int userId) {
         UserTask userTask=new UserTask();
-        userTask.setTaskid(task.getId());
-        userTask.setUserid(userId);
-        userTask.setState(0);
+        userTask.setBusinessTaskId(task.getId());
+        userTask.setUserId(userId);
+        userTask.setUserTaskStatus(0);
         userTaskMapper.insertUseGeneratedKeys(userTask);
     }
 

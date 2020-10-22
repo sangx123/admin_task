@@ -1,30 +1,41 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.sangxiang.dao.mapper.UserTaskMapper" >
-  <resultMap id="BaseResultMap" type="com.sangxiang.dao.model.UserTask" >
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="userid" property="userid" jdbcType="INTEGER" />
-    <result column="taskid" property="taskid" jdbcType="INTEGER" />
-    <result column="state" property="state" jdbcType="INTEGER" />
-    <association property="task" javaType="com.sangxiang.dao.model.BusinessTask">
-      <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-      <result column="title" jdbcType="VARCHAR" property="title" />
-      <result column="goods_price" jdbcType="REAL" property="goodsPrice" />
-      <result column="worker_Num" jdbcType="INTEGER" property="workerNum" />
-      <result column="worker_price" jdbcType="REAL" property="workerPrice" />
-      <result column="total_price" jdbcType="REAL" property="totalPrice" />
-    </association>
+    <resultMap id="BaseResultMap" type="com.sangxiang.dao.model.UserTask" >
+        <result column="id" property="id" jdbcType="INTEGER" />
+        <result column="user_id" property="userId" jdbcType="INTEGER" />
+        <result column="business_task_id" property="businessTaskId" jdbcType="INTEGER" />
+        <result column="user_task_status" property="userTaskStatus" jdbcType="INTEGER" />
+        <result column="user_apply_task_time" property="userApplyTaskTime" jdbcType="TIMESTAMP" />
+        <result column="business_agree_apply_time" property="businessAgreeApplyTime" jdbcType="TIMESTAMP" />
+        <result column="user_first_submit_task_time" property="userFirstSubmitTaskTime" jdbcType="TIMESTAMP" />
+        <result column="user_first_submit_task_content" property="userFirstSubmitTaskContent" jdbcType="VARCHAR" />
+        <result column="business_audit_first_time" property="businessAuditFirstTime" jdbcType="TIMESTAMP" />
+        <result column="business_audit_first_result" property="businessAuditFirstResult" jdbcType="VARCHAR" />
+        <result column="user_second_submit_task_time" property="userSecondSubmitTaskTime" jdbcType="TIMESTAMP" />
+        <result column="user_second_submit_task_content" property="userSecondSubmitTaskContent" jdbcType="VARCHAR" />
+        <result column="business_audit_second_time" property="businessAuditSecondTime" jdbcType="TIMESTAMP" />
+        <result column="business_audit_second_result" property="businessAuditSecondResult" jdbcType="VARCHAR" />
+        <result column="user_quit_task" property="userQuitTask" jdbcType="INTEGER" />
+        <association property="businessTask" javaType="com.sangxiang.dao.model.BusinessTask">
+          <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+          <result column="title" jdbcType="VARCHAR" property="title" />
+          <result column="goods_price" jdbcType="REAL" property="goodsPrice" />
+          <result column="worker_Num" jdbcType="INTEGER" property="workerNum" />
+          <result column="worker_price" jdbcType="REAL" property="workerPrice" />
+          <result column="total_price" jdbcType="REAL" property="totalPrice" />
+        </association>
   </resultMap>
   <select id="queryUserTask"  resultType="com.sangxiang.dao.model.BusinessTask">
-          select t1.state ,t2.title from  user_task  t1 left join business_task t2
-          on t1.taskid=t2.id where t1.userid=#{userid} AND
-          t1.state=#{state}
+          select t1.user_task_status ,t2.title from  user_task  t1 left join business_task t2
+          on t1.business_task_id=t2.id where t1.user_id=#{userid} AND
+          t1.user_task_status=#{state}
 
     </select>
 
-  <select id="queryUserHasApplyTask"  resultType="com.sangxiang.dao.model.UserTask">
+   <select id="queryUserHasApplyTask"  resultType="com.sangxiang.dao.model.UserTask">
           select t1.* from  user_task  t1 left join business_task t2
-          on t1.taskid=t2.id where t1.userid=#{userid} AND
-          t1.taskid=#{taskid}
+          on t1.business_task_id=t2.id where t1.user_id=#{userid} AND
+          t1.business_task_id=#{taskid}
     </select>
 </mapper>
