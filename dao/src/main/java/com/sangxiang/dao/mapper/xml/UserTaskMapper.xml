@@ -6,7 +6,7 @@
     <result column="userid" property="userid" jdbcType="INTEGER" />
     <result column="taskid" property="taskid" jdbcType="INTEGER" />
     <result column="state" property="state" jdbcType="INTEGER" />
-    <association property="task" javaType="com.sangxiang.dao.model.Task">
+    <association property="task" javaType="com.sangxiang.dao.model.BusinessTask">
       <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
       <result column="title" jdbcType="VARCHAR" property="title" />
       <result column="goods_price" jdbcType="REAL" property="goodsPrice" />
@@ -15,15 +15,15 @@
       <result column="total_price" jdbcType="REAL" property="totalPrice" />
     </association>
   </resultMap>
-  <select id="queryUserTask"  resultType="com.sangxiang.dao.model.Task">
-          select t1.state ,t2.title from  user_task  t1 left join task t2
+  <select id="queryUserTask"  resultType="com.sangxiang.dao.model.BusinessTask">
+          select t1.state ,t2.title from  user_task  t1 left join business_task t2
           on t1.taskid=t2.id where t1.userid=#{userid} AND
           t1.state=#{state}
 
     </select>
 
   <select id="queryUserHasApplyTask"  resultType="com.sangxiang.dao.model.UserTask">
-          select t1.* from  user_task  t1 left join task t2
+          select t1.* from  user_task  t1 left join business_task t2
           on t1.taskid=t2.id where t1.userid=#{userid} AND
           t1.taskid=#{taskid}
     </select>

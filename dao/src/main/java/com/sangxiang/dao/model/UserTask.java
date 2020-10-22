@@ -18,7 +18,7 @@ public class UserTask {
         return id;
     }
     @Transient
-    private  Task task;
+    private  BusinessTask task;
 
     public void setId(Integer id) {
         this.id = id;
@@ -48,14 +48,6 @@ public class UserTask {
         this.state = state;
     }
 
-    public Task getTask() {
-        return task;
-    }
-
-    public void setTask(Task task) {
-        this.task = task;
-    }
-
     @Transient
     public static int jie_shou=0;
 
@@ -80,4 +72,12 @@ public class UserTask {
     }
     @Transient
     public String  statusContent;
+
+    public BusinessTask getTask() {
+        return task;
+    }
+
+    public void setTask(BusinessTask task) {
+        this.task = task;
+    }
 }

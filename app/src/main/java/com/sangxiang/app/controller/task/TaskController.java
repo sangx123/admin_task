@@ -87,7 +87,7 @@ public class TaskController extends AppBaseController {
     UserTaskService userTaskService;
 
     @Autowired
-    TaskService taskService;
+    BusinessTaskService businessTaskService;
 
     @Autowired
     SysUserService sysUserService;
@@ -183,19 +183,19 @@ public class TaskController extends AppBaseController {
             }
         }
         content=new Gson().toJson(list);
-        Task task=new Task();
-        task.setTitle(title);
-        task.setContent(content);
-        task.setCreateTime(DateUtils.format(new Date(),DateUtils.DATE_TIME_PATTERN));
-        task.setUserid(userId);
-        task.setTypeid(type);
-        task.setTaskLimit(limit);
-        task.setWorkEndTime(work_end_time);
-        task.setApplyEndTime(apply_end_time);
+        BusinessTask businessTask=new BusinessTask();
+        businessTask.setTitle(title);
+        businessTask.setContent(content);
+        businessTask.setCreateTime(DateUtils.format(new Date(),DateUtils.DATE_TIME_PATTERN));
+        businessTask.setUserid(userId);
+        businessTask.setTypeid(type);
+        businessTask.setTaskLimit(limit);
+        businessTask.setWorkEndTime(work_end_time);
+        businessTask.setApplyEndTime(apply_end_time);
 
-        task.setWorkerPrice(new BigDecimal(jiangLi));
-        task.setNeedpeoplenum(Integer.valueOf(peopleNum));
-        task.setStatus(0);
+        businessTask.setWorkerPrice(new BigDecimal(jiangLi));
+        businessTask.setNeedpeoplenum(Integer.valueOf(peopleNum));
+        businessTask.setStatus(0);
 
         //创建支付订单
         //实例化客户端
@@ -212,7 +212,7 @@ public class TaskController extends AppBaseController {
         model.setSubject(name);
         model.setOutTradeNo(tradeNo);
         model.setTimeoutExpress(alipayTimeoutExpress);
-        model.setTotalAmount(String.valueOf(task.getWorkerPrice().floatValue() * task.getNeedpeoplenum()));
+        model.setTotalAmount(String.valueOf(businessTask.getWorkerPrice().floatValue() * businessTask.getNeedpeoplenum()));
         model.setProductCode(alipayProductCode);
         request.setBizModel(model);
         request.setNotifyUrl(alipayNotifyUrl);
@@ -221,11 +221,11 @@ public class TaskController extends AppBaseController {
             AlipayTradeAppPayResponse response = alipayClient.sdkExecute(request);
             System.out.println(response.getBody());//就是orderString 可以直接给客户端请求，无需再做处理。
             //在真正生成订单的时候才创建任务
-            task.setOrderid(tradeNo);
-            task.setNeedtotalpay(new BigDecimal(task.getWorkerPrice().doubleValue() * task.getNeedpeoplenum().doubleValue()));
-            task.setPayStatus(0);
-            task.setAduitTime(2);
-            taskService.createTask(task);
+            businessTask.setOrderid(tradeNo);
+            businessTask.setNeedtotalpay(new BigDecimal(businessTask.getWorkerPrice().doubleValue() * businessTask.getNeedpeoplenum().doubleValue()));
+            businessTask.setPayStatus(0);
+            businessTask.setAduitTime(2);
+            businessTaskService.createTask(businessTask);
             return success(response.getBody());
         } catch (AlipayApiException e) {
             e.printStackTrace();
@@ -249,10 +249,10 @@ public class TaskController extends AppBaseController {
 
     @PostMapping(value = "/getHomeTaskList")
     @ApiOperation(value="任务大厅任务")
-    public AppResult<PageInfo<Task>> getHomeTaskList(@RequestBody HomeTaskParam param){
-        PageInfo<Task> pageInfo= taskService.findPage(param.getPageNumber(),param.getPageSize(),param.getStatus());
+    public AppResult<PageInfo<BusinessTask>> getHomeTaskList(@RequestBody HomeTaskParam param){
+        PageInfo<BusinessTask> pageInfo= businessTaskService.findPage(param.getPageNumber(),param.getPageSize(),param.getStatus());
         for(int i=0;i<pageInfo.getList().size();i++){
-            Task item=pageInfo.getList().get(i);
+            BusinessTask item=pageInfo.getList().get(i);
             List<String> list=new ArrayList<>();
             if(item.getContent().contains("<img")){
                 List<String> textList = StringUtils.cutStringByLineTag(item.getContent());
@@ -271,11 +271,11 @@ public class TaskController extends AppBaseController {
 
     @PostMapping(value = "/getMyPublishTaskList")
     @ApiOperation(value="我发布的任务列表")
-    public AppResult<PageInfo<Task>> getMyPublishTaskList(@RequestHeader("userToken") String userToken,@RequestBody HomeTaskParam param){
+    public AppResult<PageInfo<BusinessTask>> getMyPublishTaskList(@RequestHeader("userToken") String userToken,@RequestBody HomeTaskParam param){
         int userId = UserTokenManager.getInstance().getUserIdFromToken(userToken).intValue();
-        PageInfo<Task> pageInfo= taskService.findAllUserPublishTaskList(param.getPageNumber(),param.getPageSize(),userId,param.getStatus());
+        PageInfo<BusinessTask> pageInfo= businessTaskService.findAllUserPublishTaskList(param.getPageNumber(),param.getPageSize(),userId,param.getStatus());
         for(int i=0;i<pageInfo.getList().size();i++){
-            Task item=pageInfo.getList().get(i);
+            BusinessTask item=pageInfo.getList().get(i);
             List<String> list=new ArrayList<>();
             if(item.getContent().contains("<img")){
                 List<String> textList = StringUtils.cutStringByLineTag(item.getContent());
@@ -296,7 +296,7 @@ public class TaskController extends AppBaseController {
     @ApiOperation(value="申请任务")
     public synchronized AppResult applyTask(@RequestHeader("userToken") String userToken,@RequestBody ApplyTaskParam param){
         int userId = UserTokenManager.getInstance().getUserIdFromToken(userToken).intValue();
-        Task task=  taskService.queryById(param.getTaskid());
+        BusinessTask task=  businessTaskService.queryById(param.getTaskid());
 
         //首先判断该任务是否结束
         if(task.getStatus()==1){
@@ -554,9 +554,9 @@ public class TaskController extends AppBaseController {
 
     @PostMapping(value = "/getTaskById")
     @ApiOperation(value="获取任务详情")
-    public AppResult<Task> getTaskById(@RequestHeader("userToken") String userToken, @RequestBody TaskParam taskParam){
+    public AppResult<BusinessTask> getTaskById(@RequestHeader("userToken") String userToken, @RequestBody TaskParam taskParam){
         int userId = UserTokenManager.getInstance().getUserIdFromToken(userToken).intValue();
-        Task model= taskService.queryById(taskParam.getId());
+        BusinessTask model= businessTaskService.queryById(taskParam.getId());
         return success(model);
     }
 }

@@ -4,10 +4,10 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.sangxiang.base.service.BaseService;
 import com.sangxiang.base.service.impl.BaseServiceImpl;
-import com.sangxiang.dao.mapper.TaskMapper;
+import com.sangxiang.dao.mapper.BusinessTaskMapper;
 import com.sangxiang.dao.mapper.UserTaskMapper;
+import com.sangxiang.dao.model.BusinessTask;
 import com.sangxiang.dao.model.SysUser;
-import com.sangxiang.dao.model.Task;
 import com.sangxiang.dao.model.UserTask;
 import com.sangxiang.dao.service.UserTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +23,10 @@ import java.util.List;
     @Autowired
     UserTaskMapper userTaskMapper;
 
-    @Autowired
-    TaskMapper taskMapper;
 
     @Transactional
     @Override
-    public void createUserTask(Task task, SysUser user) {
+    public void createUserTask(BusinessTask task, SysUser user) {
         //task.setWorkerNum(task.getWorkerNum()-1);
         //taskMapper.updateByPrimaryKey(task);
         UserTask userTask=new UserTask();
@@ -39,7 +37,7 @@ import java.util.List;
     }
 
     @Override
-    public void createUserTask(Task task, int userId) {
+    public void createUserTask(BusinessTask task, int userId) {
         UserTask userTask=new UserTask();
         userTask.setTaskid(task.getId());
         userTask.setUserid(userId);
@@ -49,15 +47,15 @@ import java.util.List;
 
     @Transactional(readOnly = true)
     @Override
-    public PageInfo<Task> getUserTask(int userid,int state,int pageNum,int pageSize) {
+    public PageInfo<BusinessTask> getUserTask(int userid,int state,int pageNum,int pageSize) {
         //分页
         PageHelper.startPage(pageNum,pageSize);
-        List<Task> list = userTaskMapper.queryUserTask(userid,state);
+        List<BusinessTask> list = userTaskMapper.queryUserTask(userid,state);
        return new PageInfo<>(list);
     }
 
     @Override
-    public List<Task> getUserTask(int userid, int status) {
+    public List<BusinessTask> getUserTask(int userid, int status) {
         return userTaskMapper.queryUserTask(userid,status);
     }
 

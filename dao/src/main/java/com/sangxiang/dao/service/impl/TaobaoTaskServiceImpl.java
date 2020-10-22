@@ -8,7 +8,6 @@ import com.sangxiang.dao.mapper.TaobaoTaskMapper;
 import com.sangxiang.dao.mapper.UserMoneyHistoryMapper;
 import com.sangxiang.dao.model.SysUser;
 import com.sangxiang.dao.model.TaobaoTask;
-import com.sangxiang.dao.model.Task;
 import com.sangxiang.dao.model.UserMoneyHistory;
 import com.sangxiang.dao.service.TaobaoTaskService;
 import org.springframework.beans.factory.annotation.Autowired;

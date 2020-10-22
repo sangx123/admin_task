@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.sangxiang.dao.mapper.TaskMapper">
-    <resultMap id="BaseResultMap" type="com.sangxiang.dao.model.Task" >
+<mapper namespace="com.sangxiang.dao.mapper.BusinessTaskMapper">
+    <resultMap id="BaseResultMap" type="com.sangxiang.dao.model.BusinessTask" >
         <result column="id" property="id" jdbcType="INTEGER" />
         <result column="userid" property="userid" jdbcType="INTEGER" />
         <result column="create_time" property="createTime" jdbcType="VARCHAR" />
@@ -20,33 +20,31 @@
         <result column="orderId" property="orderid" jdbcType="VARCHAR" />
     </resultMap>
 
-  <select id="queryById" parameterType="int" resultType="com.sangxiang.dao.model.Task">
-        select * from task where id = #{value}
+  <select id="queryById" parameterType="int" resultType="com.sangxiang.dao.model.BusinessTask">
+        select * from business_task where id = #{value}
     </select>
-  <select id="getShanhuTask"  resultType="com.sangxiang.dao.model.Task">
-        select * from task where userid = #{userid} AND status=#{status}
+  <select id="getShanhuTask"  resultType="com.sangxiang.dao.model.BusinessTask">
+        select * from business_task where userid = #{userid} AND status=#{status}
     </select>
 
-  <select id="getEnableTask"  resultType="com.sangxiang.dao.model.Task">
+  <select id="getEnableTask"  resultType="com.sangxiang.dao.model.BusinessTask">
        SELECT * from
-        task where status=1
+        business_task where status=1
         order
         by create_time desc
     </select>
 
-    <select id="getUserPublishTask"  resultType="com.sangxiang.dao.model.Task">
+  <select id="getUserPublishTask"  resultType="com.sangxiang.dao.model.BusinessTask">
        SELECT * from
-        task where userid = #{userid} AND status=#{status}
+        business_task where userid = #{userid} AND status=#{status}
         order
         by create_time desc
     </select>
 
-    <select id="getAllUserPublishTask"  resultType="com.sangxiang.dao.model.Task">
+  <select id="getAllUserPublishTask"  resultType="com.sangxiang.dao.model.BusinessTask">
        SELECT * from
-        task where userid = #{userid} AND status=#{status}
+        business_task where userid = #{userid} AND status=#{status}
         order
         by create_time desc
     </select>
-
-
 </mapper>

@@ -49,7 +49,7 @@
             <!--<property name="modelOnly" value="false"/>-->
         <!--</table>-->
 
-        <table tableName="user_task">
+        <table tableName="business_task">
         </table>
 
     </context>
