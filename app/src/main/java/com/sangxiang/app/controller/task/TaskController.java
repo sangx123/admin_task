@@ -137,7 +137,7 @@ public class TaskController extends AppBaseController {
                     String fileName = file.getOriginalFilename();
                     //判断是否有文件且是否为图片文件
                     if (fileName != null && !"".equalsIgnoreCase(fileName.trim()) && isImageFile(fileName)) {
-                        String imageName=currentDate() + getFileType(fileName);
+                        String imageName=DateUtils.format(new Date(),"yyyyMMddHHmmssSSS") + getFileType(fileName);
                         String filePath=imagePath + "/" + imageName;
                         //创建输出文件对象
                         File outFile = new File(filePath);
@@ -206,7 +206,7 @@ public class TaskController extends AppBaseController {
 
         // 传入业务参数。以下方法为sdk的model入参方式(model和biz_content同时存在的情况下取biz_content)。
         AlipayTradeAppPayModel model = new AlipayTradeAppPayModel();
-        String tradeNo= currentDate()+userId;
+        String tradeNo= DateUtils.format(new Date(),"yyyyMMddHHmmssSSS")+userId;
         String name="心享-"+tradeNo;
         model.setBody("心享-用户订单");
         model.setSubject(name);
@@ -269,6 +269,18 @@ public class TaskController extends AppBaseController {
     }
 
 
+    @PostMapping(value = "/getHomeBusinessTaskList")
+    @ApiOperation(value="获取大厅任务列表")
+    //分页，
+    //任务状态，进行中的任务状态3，目前暂时手动操作为0
+    //
+    public AppResult<PageInfo<BusinessTask>> getHomeBusinessTaskList(@RequestHeader("userToken") String userToken,@RequestBody HomeTaskParam param){
+        //int userId = UserTokenManager.getInstance().getUserIdFromToken(userToken).intValue();
+        PageInfo<BusinessTask> pageInfo= businessTaskService.geHomeBusinessTaskPageList(param.getPageNumber(),param.getPageSize(),param.getStatus(),param.getType());
+        return success(pageInfo);
+    }
+
+
     @PostMapping(value = "/getMyPublishTaskList")
     @ApiOperation(value="我发布的任务列表")
     public AppResult<PageInfo<BusinessTask>> getMyPublishTaskList(@RequestHeader("userToken") String userToken,@RequestBody HomeTaskParam param){
@@ -291,34 +303,49 @@ public class TaskController extends AppBaseController {
         return success(pageInfo);
     }
 
-
     @PostMapping(value = "/applyTask")
     @ApiOperation(value="申请任务")
+    //先判断任务是否超过截止时间，
+    //没有超过的话在判断任务是否被关闭
+    //判断已申请通过人数是否超过任务名额，
+    //申请任务总人数，不能超过任务名额30人
+    //不能申请自己发布的任务
+    //不能申请已经申请的任务
+    //参数为BusinessTaskId
     public synchronized AppResult applyTask(@RequestHeader("userToken") String userToken,@RequestBody ApplyTaskParam param){
         int userId = UserTokenManager.getInstance().getUserIdFromToken(userToken).intValue();
         BusinessTask task=  businessTaskService.queryById(param.getTaskid());
+        List<UserTask> userTaskList=userTaskService.queryUserTaskListByBusinessTaskId(task.getId());
 
-        //首先判断该任务是否结束
-        if(task.getStatus()==1){
-            return fail(AppExecStatus.FAIL,"任务已结束或者关闭");
+
+        int applyedSum=0;
+        boolean userHasApplyed=false;
+        if(userTaskList!=null) {
+            for (int i = 0; i < userTaskList.size(); i++) {
+                if(userTaskList.get(i).getUserTaskStatus()>0){
+                    applyedSum++;
+                }
+                if(userTaskList.get(i).getUserId()==userId){
+                    userHasApplyed=true;
+                    break;
+                }
+            }
         }
-
-//        //先判断任务是否达到上限
-//        if(task.getWorkerNum()<=task.getWorkingNum()){
-//            return fail(AppExecStatus.FAIL,"申请人数已达到上限!");
-//        }
-
-        //是否是自己在接收任务
+        if(userHasApplyed){
+            return fail(AppExecStatus.FAIL,"该任务已申请，不能重复申请");
+        }
         if(task.getUserid()==userId){
             return fail(AppExecStatus.FAIL,"自己不能申请自己发布的任务!");
         }
-
-        UserTask userTask=userTaskService.hasApplyTask(userId,task.getId());
-        //判断用户是否已经申请过该任务
-        if(userTask!=null){
-            return fail(AppExecStatus.FAIL,"您已经做过该任务了不能再做该任务!");
+        if(task.getStatus()!=3){
+            return fail(AppExecStatus.FAIL,"任务未开始，或者已结束");
         }
-
+        if(applyedSum>task.getNeedpeoplenum()){
+            return fail(AppExecStatus.FAIL,"任务名额已满");
+        }
+        if(userTaskList.size()>task.getNeedpeoplenum()+30){
+            return fail(AppExecStatus.FAIL,"单个任务申请人数已超过任务名额30人，不能再申请");
+        }
         userTaskService.createUserTask(task,userId);
         return success("任务申请成功，请等待审核！");
     }
@@ -333,19 +360,19 @@ public class TaskController extends AppBaseController {
         return "";
     }
 
-    /**
-     * 获取当前时间 年月日时分秒毫秒
-     **/
-    public static String currentDate() {
-        String result = "";
-        try {
-            SimpleDateFormat dfs = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-            Date data = new Date();
-            result = dfs.format(data);
-        } catch (Exception e) {
-        }
-        return result;
-    }
+//    /**
+//     * 获取当前时间 年月日时分秒毫秒
+//     **/
+//    public static String currentDate() {
+//        String result = "";
+//        try {
+//            SimpleDateFormat dfs = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+//            Date data = new Date();
+//            result = dfs.format(data);
+//        } catch (Exception e) {
+//        }
+//        return result;
+//    }
 
 
     @RequestMapping(value = "/getNotifyUrlInfo",method = RequestMethod.POST)
@@ -447,7 +474,6 @@ public class TaskController extends AppBaseController {
         if(params.containsKey("refund_fee")){
             model.setRefundFee(params.get("refund_fee"));
         }
-
 
         if(params.containsKey("subject")){
             model.setSubject(params.get("subject"));
@@ -554,9 +580,14 @@ public class TaskController extends AppBaseController {
 
     @PostMapping(value = "/getTaskById")
     @ApiOperation(value="获取任务详情")
+    //任务详情返回，任务标题，任务创建人，创建时间，所需任务人数，任务价格，申请截止日期，第一次任务提交截止日期
+    //任务查看人数，正在申请中的人数，【已进行中的任务人数】，已完成任务的人数，申诉中的任务人数，已完成的任务
     public AppResult<BusinessTask> getTaskById(@RequestHeader("userToken") String userToken, @RequestBody TaskParam taskParam){
         int userId = UserTokenManager.getInstance().getUserIdFromToken(userToken).intValue();
         BusinessTask model= businessTaskService.queryById(taskParam.getId());
+        List<UserTask> list=userTaskService.queryUserTaskListByBusinessTaskId(model.getId());
+        model.setUserTaskList(list);
         return success(model);
     }
+
 }

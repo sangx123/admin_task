@@ -20,6 +20,7 @@ public interface BusinessTaskService extends BaseService<BusinessTask> {
      * @return
      */
     BusinessTask queryById(int id);
+
     /**
      * 分页查询任务列表
      * @param pageNum
@@ -27,7 +28,11 @@ public interface BusinessTaskService extends BaseService<BusinessTask> {
      * @param state
      * @return
      */
+    PageInfo<BusinessTask> geHomeBusinessTaskPageList(Integer pageNum, Integer pageSize, int state,int type);
+
+
     PageInfo<BusinessTask> findPage(Integer pageNum, Integer pageSize, int state);
+
     List<BusinessTask> getShanhuTask(int userid, int status);
 
     PageInfo<BusinessTask> findUserPublishTaskList(Integer pageNumber, Integer pageSize, Integer state, int userId);

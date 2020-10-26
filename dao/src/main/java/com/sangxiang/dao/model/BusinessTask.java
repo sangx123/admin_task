@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import java.math.BigDecimal;
+import java.util.List;
 
 public class BusinessTask extends BaseEntity {
     @Id
@@ -28,11 +29,6 @@ public class BusinessTask extends BaseEntity {
     private Integer payStatus;
 
     private Integer status;
-    @Transient
-    private Integer hasApplyedPeopleNum;//有多少人申请
-
-    @Transient
-    private Integer hasApplyedAndAuditPassPeopleNum;//已申请通过多少人
 
     private BigDecimal needtotalpay;
 
@@ -47,6 +43,17 @@ public class BusinessTask extends BaseEntity {
     private Integer aduitTime;
 
     private String orderid;
+
+    public List<UserTask> getUserTaskList() {
+        return userTaskList;
+    }
+
+    public void setUserTaskList(List<UserTask> userTaskList) {
+        this.userTaskList = userTaskList;
+    }
+
+    @Transient
+    private List<UserTask> userTaskList;
 
     public Integer getId() {
         return id;
@@ -174,21 +181,5 @@ public class BusinessTask extends BaseEntity {
 
     public void setOrderid(String orderid) {
         this.orderid = orderid == null ? null : orderid.trim();
-    }
-
-    public Integer getHasApplyedPeopleNum() {
-        return hasApplyedPeopleNum;
-    }
-
-    public void setHasApplyedPeopleNum(Integer hasApplyedPeopleNum) {
-        this.hasApplyedPeopleNum = hasApplyedPeopleNum;
-    }
-
-    public Integer getHasApplyedAndAuditPassPeopleNum() {
-        return hasApplyedAndAuditPassPeopleNum;
-    }
-
-    public void setHasApplyedAndAuditPassPeopleNum(Integer hasApplyedAndAuditPassPeopleNum) {
-        this.hasApplyedAndAuditPassPeopleNum = hasApplyedAndAuditPassPeopleNum;
     }
 }

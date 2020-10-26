@@ -6,6 +6,7 @@ import com.sangxiang.base.service.BaseService;
 import com.sangxiang.dao.model.BusinessTask;
 import com.sangxiang.dao.model.SysUser;
 import com.sangxiang.dao.model.UserTask;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -15,4 +16,6 @@ public interface UserTaskService extends BaseService<UserTask> {
     PageInfo<BusinessTask> getUserTask(int userid,int state,int pageNum, int pageSize);
     List<BusinessTask> getUserTask(int userid, int status);
     UserTask hasApplyTask(int userId, int id);
+
+    List<UserTask> queryUserTaskListByBusinessTaskId(int businessTaskId);
 }

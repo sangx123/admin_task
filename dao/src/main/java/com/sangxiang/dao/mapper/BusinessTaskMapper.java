@@ -10,8 +10,8 @@ import java.util.List;
 public interface BusinessTaskMapper extends MyMapper<BusinessTask> {
     BusinessTask queryById(int id);
     List<BusinessTask> getShanhuTask(@Param("userid")int userid, @Param("status")int status);
-
     List<BusinessTask> getEnableTask();
     List<BusinessTask> getUserPublishTask(@Param("userid")int userid, @Param("status")int status);
     List<BusinessTask> getAllUserPublishTask(@Param("userid")int userid, @Param("status")int status);
+    List<BusinessTask> getHomeBusinessTaskPageList(@Param("status")int status,@Param("typeId")int typeId);
 }

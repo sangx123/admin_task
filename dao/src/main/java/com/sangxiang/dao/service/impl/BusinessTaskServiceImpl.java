@@ -28,6 +28,13 @@ public class BusinessTaskServiceImpl extends BaseServiceImpl<BusinessTask> imple
         return businessTaskMapper.queryById(id);
     }
 
+    @Override
+    public PageInfo<BusinessTask> geHomeBusinessTaskPageList(Integer pageNum, Integer pageSize, int state, int type) {
+        PageHelper.startPage(pageNum,pageSize);
+        List<BusinessTask> list = businessTaskMapper.getHomeBusinessTaskPageList(state,type);
+        return new PageInfo<>(list);
+    }
+
     @Transactional(readOnly = true)
     @Override
     public PageInfo<BusinessTask> findPage(Integer pageNum, Integer pageSize, int state) {

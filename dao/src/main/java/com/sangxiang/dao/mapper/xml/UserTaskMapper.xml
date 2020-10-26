@@ -38,4 +38,7 @@
           on t1.business_task_id=t2.id where t1.user_id=#{userid} AND
           t1.business_task_id=#{taskid}
     </select>
+    <select id="queryUserTaskListByBusinessTaskId"  resultType="com.sangxiang.dao.model.UserTask">
+          select * from  user_task  where business_task_id=#{businessTaskId}
+    </select>
 </mapper>

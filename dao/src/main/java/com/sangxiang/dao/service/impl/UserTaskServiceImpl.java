@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -33,6 +34,7 @@ import java.util.List;
         userTask.setBusinessTaskId(task.getId());
         userTask.setUserId(user.getId());
         userTask.setUserTaskStatus(0);
+        userTask.setUserApplyTaskTime(new Date());
         userTaskMapper.insertUseGeneratedKeys(userTask);
     }
 
@@ -62,5 +64,10 @@ import java.util.List;
     @Override
     public UserTask hasApplyTask(int userId, int taskId) {
         return  userTaskMapper.queryUserHasApplyTask(userId,taskId);
+    }
+
+    @Override
+    public List<UserTask> queryUserTaskListByBusinessTaskId(int businessTaskId) {
+        return userTaskMapper.queryUserTaskListByBusinessTaskId(businessTaskId);
     }
 }

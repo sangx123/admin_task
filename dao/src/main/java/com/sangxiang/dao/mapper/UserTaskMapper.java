@@ -11,4 +11,6 @@ public interface UserTaskMapper extends MyMapper<UserTask> {
     List<BusinessTask> queryUserTask(@Param("userid")int userid, @Param("state")int state);
 
     UserTask queryUserHasApplyTask(@Param("userid")int userid,@Param("taskid")int taskid);
+
+    List<UserTask> queryUserTaskListByBusinessTaskId(@Param("businessTaskId")int businessTaskId);
 }

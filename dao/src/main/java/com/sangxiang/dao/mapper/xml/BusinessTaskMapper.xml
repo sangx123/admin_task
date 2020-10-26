@@ -47,4 +47,12 @@
         order
         by create_time desc
     </select>
+    <select id="getHomeBusinessTaskPageList"  resultType="com.sangxiang.dao.model.BusinessTask">
+       SELECT * from
+        business_task where typeId = #{typeId} AND status=#{status}
+        order
+        by create_time desc
+    </select>
+
+
 </mapper>
