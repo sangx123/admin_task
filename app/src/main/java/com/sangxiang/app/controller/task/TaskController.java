@@ -195,7 +195,7 @@ public class TaskController extends AppBaseController {
 
         businessTask.setWorkerPrice(new BigDecimal(jiangLi));
         businessTask.setNeedpeoplenum(Integer.valueOf(peopleNum));
-        businessTask.setStatus(0);
+        businessTask.setStatus(3);//支付完成就是任务进行中吧
 
         //创建支付订单
         //实例化客户端
@@ -251,20 +251,6 @@ public class TaskController extends AppBaseController {
     @ApiOperation(value="任务大厅任务")
     public AppResult<PageInfo<BusinessTask>> getHomeTaskList(@RequestBody HomeTaskParam param){
         PageInfo<BusinessTask> pageInfo= businessTaskService.findPage(param.getPageNumber(),param.getPageSize(),param.getStatus());
-        for(int i=0;i<pageInfo.getList().size();i++){
-            BusinessTask item=pageInfo.getList().get(i);
-            List<String> list=new ArrayList<>();
-            if(item.getContent().contains("<img")){
-                List<String> textList = StringUtils.cutStringByLineTag(item.getContent());
-                for (int j = 0; j <textList.size()&&j<3 ; j++) {
-                    String  text = textList.get(j);
-                    if(text.contains("<img")){
-                        list.add(StringUtils.getImgSrc(text));
-                    }
-                }
-            }
-            //item.setImages(list);
-        }
         return success(pageInfo);
     }
 
@@ -286,20 +272,6 @@ public class TaskController extends AppBaseController {
     public AppResult<PageInfo<BusinessTask>> getMyPublishTaskList(@RequestHeader("userToken") String userToken,@RequestBody HomeTaskParam param){
         int userId = UserTokenManager.getInstance().getUserIdFromToken(userToken).intValue();
         PageInfo<BusinessTask> pageInfo= businessTaskService.findAllUserPublishTaskList(param.getPageNumber(),param.getPageSize(),userId,param.getStatus());
-        for(int i=0;i<pageInfo.getList().size();i++){
-            BusinessTask item=pageInfo.getList().get(i);
-            List<String> list=new ArrayList<>();
-            if(item.getContent().contains("<img")){
-                List<String> textList = StringUtils.cutStringByLineTag(item.getContent());
-                for (int j = 0; j <textList.size()&&j<3 ; j++) {
-                    String  text = textList.get(j);
-                    if(text.contains("<img")){
-                        list.add(StringUtils.getImgSrc(text));
-                    }
-                }
-            }
-            //item.setImages(list);
-        }
         return success(pageInfo);
     }
 
