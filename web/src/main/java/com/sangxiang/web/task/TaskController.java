@@ -62,7 +62,7 @@ public class TaskController extends BaseResource {
 //        if(model.getWorkerNum()==0){
 //            return success("申请人数已达到上限!");
 //        }
-        userTaskService.createUserTask(model,ShiroUtils.getUser());
+        userTaskService.createUserTask(model,ShiroUtils.getUser().getId());
         return success("申请成功！");
     }
 

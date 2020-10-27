@@ -25,25 +25,13 @@ import java.util.List;
     UserTaskMapper userTaskMapper;
 
 
-    @Transactional
-    @Override
-    public void createUserTask(BusinessTask task, SysUser user) {
-        //task.setWorkerNum(task.getWorkerNum()-1);
-        //taskMapper.updateByPrimaryKey(task);
-        UserTask userTask=new UserTask();
-        userTask.setBusinessTaskId(task.getId());
-        userTask.setUserId(user.getId());
-        userTask.setUserTaskStatus(0);
-        userTask.setUserApplyTaskTime(new Date());
-        userTaskMapper.insertUseGeneratedKeys(userTask);
-    }
-
     @Override
     public void createUserTask(BusinessTask task, int userId) {
         UserTask userTask=new UserTask();
         userTask.setBusinessTaskId(task.getId());
         userTask.setUserId(userId);
         userTask.setUserTaskStatus(0);
+        userTask.setUserApplyTaskTime(new Date());
         userTaskMapper.insertUseGeneratedKeys(userTask);
     }
 
@@ -69,5 +57,20 @@ import java.util.List;
     @Override
     public List<UserTask> queryUserTaskListByBusinessTaskId(int businessTaskId) {
         return userTaskMapper.queryUserTaskListByBusinessTaskId(businessTaskId);
+    }
+
+    @Override
+    public List<UserTask> queryUserTaskListByBusinessTaskIdAndStatus(int businessTaskId, int status) {
+        return userTaskMapper.queryUserTaskListByBusinessTaskIdAndStatus(businessTaskId,status);
+    }
+
+    @Override
+    public List<UserTask> querySuccessedUserTaskListByBusinessTaskId(int businessTaskId) {
+        return userTaskMapper.querySuccessedUserTaskListByBusinessTaskId(businessTaskId);
+    }
+
+    @Override
+    public List<UserTask> queryFailedUserTaskListByBusinessTaskId(int businessTaskId) {
+        return userTaskMapper.queryFailedUserTaskListByBusinessTaskId(businessTaskId);
     }
 }

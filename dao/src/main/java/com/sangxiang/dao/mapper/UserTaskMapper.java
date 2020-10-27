@@ -13,4 +13,11 @@ public interface UserTaskMapper extends MyMapper<UserTask> {
     UserTask queryUserHasApplyTask(@Param("userid")int userid,@Param("taskid")int taskid);
 
     List<UserTask> queryUserTaskListByBusinessTaskId(@Param("businessTaskId")int businessTaskId);
+    //查询所有的完成的结果
+    List<UserTask> querySuccessedUserTaskListByBusinessTaskId(@Param("businessTaskId")int businessTaskId);
+
+    //查询所有的未完成的结果
+    List<UserTask> queryFailedUserTaskListByBusinessTaskId(@Param("businessTaskId")int businessTaskId);
+
+    List<UserTask> queryUserTaskListByBusinessTaskIdAndStatus(@Param("businessTaskId")int businessTaskId,@Param("user_task_status")int user_task_status);
 }

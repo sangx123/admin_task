@@ -23,6 +23,7 @@ import com.sangxiang.model.ApplyTaskParam;
 import com.sangxiang.model.Login.HomeTaskParam;
 import com.sangxiang.model.Task.TaskItem;
 import com.sangxiang.model.Task.TaskParam;
+import com.sangxiang.model.UserCenter.UserTaskParam;
 import com.sangxiang.util.DateUtils;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.io.FileUtils;
@@ -273,6 +274,30 @@ public class TaskController extends AppBaseController {
         int userId = UserTokenManager.getInstance().getUserIdFromToken(userToken).intValue();
         PageInfo<BusinessTask> pageInfo= businessTaskService.findAllUserPublishTaskList(param.getPageNumber(),param.getPageSize(),userId,param.getStatus());
         return success(pageInfo);
+    }
+
+    @PostMapping(value = "/getMyPublishUserTask")
+    @ApiOperation(value="我发布的任务列表")
+    public AppResult<List<UserTask>> getMyPublishUserTask(@RequestHeader("userToken") String userToken,@RequestBody UserTaskParam param){
+        int userId = UserTokenManager.getInstance().getUserIdFromToken(userToken).intValue();
+        if(param.getStatus()==-1){
+            //查询全部任务
+            List<UserTask> pageInfo= userTaskService.queryUserTaskListByBusinessTaskId(param.getTaskId());
+            return success(pageInfo);
+        } else if(param.getStatus()==100) {
+            //此处是查询已完成的任务
+            List<UserTask> pageInfo= userTaskService.querySuccessedUserTaskListByBusinessTaskId(param.getTaskId());
+            return success(pageInfo);
+        }else if(param.getStatus()==200) {
+            //此处是查询未完成的任务
+            List<UserTask> pageInfo= userTaskService.queryFailedUserTaskListByBusinessTaskId(param.getTaskId());
+            return success(pageInfo);
+        }else {
+            //此处是查询已完成的任务
+            List<UserTask> pageInfo= userTaskService.queryUserTaskListByBusinessTaskIdAndStatus(param.getTaskId(),param.getStatus());
+            return success(pageInfo);
+        }
+
     }
 
     @PostMapping(value = "/applyTask")

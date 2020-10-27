@@ -41,4 +41,18 @@
     <select id="queryUserTaskListByBusinessTaskId"  resultType="com.sangxiang.dao.model.UserTask">
           select * from  user_task  where business_task_id=#{businessTaskId}
     </select>
+
+    <select id="queryUserTaskListByBusinessTaskIdAndStatus"  resultType="com.sangxiang.dao.model.UserTask">
+          select * from  user_task  where business_task_id=#{businessTaskId} AND user_task_status=#{user_task_status}
+    </select>
+
+    <select id="querySuccessedUserTaskListByBusinessTaskId"  resultType="com.sangxiang.dao.model.UserTask">
+          select * from  user_task  where business_task_id=#{businessTaskId} AND user_task_status in (4,5,8,9)
+    </select>
+
+    <select id="queryFailedUserTaskListByBusinessTaskId"  resultType="com.sangxiang.dao.model.UserTask">
+          select * from  user_task  where business_task_id=#{businessTaskId} AND user_task_status in (6,10)
+    </select>
+
+
 </mapper>
