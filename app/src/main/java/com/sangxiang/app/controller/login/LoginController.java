@@ -60,6 +60,7 @@ public class LoginController extends AppBaseController {
         String userToken = UserTokenManager.getInstance().saveUserToken(loginInfo.getId().longValue());
         UserLoginInfo userLoginInfo=new UserLoginInfo();
         userLoginInfo.setUserToken(userToken);
+        userLoginInfo.setId(loginInfo.getId());
         return success(userLoginInfo);
 
     }
@@ -96,6 +97,7 @@ public class LoginController extends AppBaseController {
      */
     @ApiOperation(value="注册用户")
     @PostMapping("/register")
+    //暂时未对非空判断
     // @RequiresPermissions("sys:user:save")
     public AppResult<UserLoginInfo> register(@RequestBody SysUser sysUser){
         int result=checkUser(sysUser);
