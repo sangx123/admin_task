@@ -5,11 +5,14 @@ import com.sangxiang.dao.mapper.SysUserMapper;
 import com.sangxiang.dao.model.SysUser;
 import com.sangxiang.dao.service.SysUserService;
 import com.sangxiang.util.RegexMatcher;
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.logging.Logger;
 
 @Service
 public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysUserService {
@@ -45,7 +48,10 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements SysU
         if (0 != user.getState()) {
             return null;
         }
-
+        Logger.getLogger("sangxiang").info("收到的MD5密码为："+password);
+        //sha256加密
+        Logger.getLogger("sangxiang").info("数据库的salt值为："+user.getSalt());
+        Logger.getLogger("sangxiang").info("加密后的值为："+new Sha256Hash(password, user.getSalt()).toHex());
         if (!StringUtils.equalsIgnoreCase(user.getPassword(), new Sha256Hash(password, user.getSalt()).toHex())) {
             return null;
         }

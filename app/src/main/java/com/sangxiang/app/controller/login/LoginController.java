@@ -51,7 +51,7 @@ public class LoginController extends AppBaseController {
             //用户名密码登录
             checkParam(mobile, "缺少账号");
             checkParam(password, "缺少密码");
-            loginInfo = sysUserService.authenticateName(mobile, password, pushToken);
+            loginInfo = sysUserService.authenticateMobile(mobile, password, pushToken);
         }
         if(loginInfo==null){
             return  fail(AppExecStatus.FAIL,"用户名或手机号不存在!");
@@ -110,9 +110,12 @@ public class LoginController extends AppBaseController {
 			}
         }
         sysUser.setCreateTime(new Date());
+        logger.info("MD5密码为："+sysUser.getPassword());
         //sha256加密
         String salt = RandomStringUtils.randomAlphanumeric(20);
+        logger.info("salt值为："+salt);
         sysUser.setPassword(new Sha256Hash(sysUser.getPassword(),salt).toHex());
+        logger.info("加密后的值为："+sysUser.getPassword());
         sysUser.setSalt(salt);
         //用户状态：0-启用；1-停用；2-锁定；
         sysUser.setState(0);
