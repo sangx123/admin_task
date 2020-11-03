@@ -9,5 +9,5 @@ public interface SysUserMapper extends MyMapper<SysUser> {
     SysUser queryUserRole(int userId);
     SysUser fetchOneByMobile(String mobile);
     SysUser fetchOneByName(String name);
-
+    SysUser getUserInfo(int  userId);
 }

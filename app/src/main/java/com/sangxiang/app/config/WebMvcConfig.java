@@ -48,8 +48,8 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 //        registry.addInterceptor(new AdminInterceptor()).addPathPatterns("/admin/**").excludePathPatterns("/admin/login");
         //配置防止表单重复提交拦截器
        // registry.addInterceptor(new FormTokenInterceptor()).addPathPatterns("/**");resetPassword
-        registry.addInterceptor(new ApiInterceptor()).addPathPatterns("/api/**")//拦截所有的api下面的接口
-
+        registry.addInterceptor(new ApiInterceptor())
+                .addPathPatterns("/api/**")//拦截所有的api下面的接口
                 .excludePathPatterns("/test")
                 .excludePathPatterns("/api/index/resetPassword")//不拦截登陆，注册，重置密码
                 .excludePathPatterns("/api/index/register")
