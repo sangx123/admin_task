@@ -171,4 +171,15 @@ public class UserTask extends BaseEntity {
     public void setTask(BusinessTask task) {
         this.task = task;
     }
+
+    @Transient
+    private  String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

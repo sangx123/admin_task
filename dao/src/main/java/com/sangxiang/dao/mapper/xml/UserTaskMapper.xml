@@ -17,6 +17,7 @@
         <result column="business_audit_second_time" property="businessAuditSecondTime" jdbcType="TIMESTAMP" />
         <result column="business_audit_second_result" property="businessAuditSecondResult" jdbcType="VARCHAR" />
         <result column="user_quit_task" property="userQuitTask" jdbcType="INTEGER" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
         <association property="businessTask" javaType="com.sangxiang.dao.model.BusinessTask">
           <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
           <result column="title" jdbcType="VARCHAR" property="title" />
@@ -25,6 +26,10 @@
           <result column="worker_price" jdbcType="REAL" property="workerPrice" />
           <result column="total_price" jdbcType="REAL" property="totalPrice" />
         </association>
+<!--        <association property="sysUser" javaType="com.sangxiang.dao.model.SysUser">-->
+<!--            <id column="r_id" property="id" jdbcType="INTEGER" />-->
+<!--            <result column="name" property="name" jdbcType="VARCHAR" />-->
+<!--        </association>-->
   </resultMap>
   <select id="queryUserTask"  resultType="com.sangxiang.dao.model.BusinessTask">
           select t1.user_task_status ,t2.title from  user_task  t1 left join business_task t2
@@ -34,24 +39,32 @@
     </select>
 
    <select id="queryUserHasApplyTask"  resultType="com.sangxiang.dao.model.UserTask">
-          select t1.* from  user_task  t1 left join business_task t2
+         SELECT t3.*,t4.id r_id,t4.name FROM ( select t1.* from  user_task  t1 left join business_task t2
           on t1.business_task_id=t2.id where t1.user_id=#{userid} AND
-          t1.business_task_id=#{taskid}
+          t1.business_task_id=#{taskid} ) t3 LEFT JOIN sys_user t4 on t3.user_id= t4.id
     </select>
     <select id="queryUserTaskListByBusinessTaskId"  resultType="com.sangxiang.dao.model.UserTask">
-          select * from  user_task  where business_task_id=#{businessTaskId}
+         SELECT t3.*,t4.id r_id,t4.name FROM (
+                select * from  user_task  where business_task_id=#{businessTaskId}
+           ) t3 LEFT JOIN sys_user t4 on t3.user_id= t4.id
     </select>
 
     <select id="queryUserTaskListByBusinessTaskIdAndStatus"  resultType="com.sangxiang.dao.model.UserTask">
-          select * from  user_task  where business_task_id=#{businessTaskId} AND user_task_status=#{user_task_status}
+     SELECT t3.*,t4.id r_id,t4.name FROM (
+              select * from  user_task  where business_task_id=#{businessTaskId} AND user_task_status=#{user_task_status}
+              ) t3 LEFT JOIN sys_user t4 on t3.user_id= t4.id
     </select>
 
     <select id="querySuccessedUserTaskListByBusinessTaskId"  resultType="com.sangxiang.dao.model.UserTask">
+ SELECT t3.*,t4.id r_id,t4.name FROM (
           select * from  user_task  where business_task_id=#{businessTaskId} AND user_task_status in (4,5,8,9)
+          ) t3 LEFT JOIN sys_user t4 on t3.user_id= t4.id
     </select>
 
     <select id="queryFailedUserTaskListByBusinessTaskId"  resultType="com.sangxiang.dao.model.UserTask">
+    SELECT t3.*,t4.id r_id,t4.name FROM (
           select * from  user_task  where business_task_id=#{businessTaskId} AND user_task_status in (6,10)
+           ) t3 LEFT JOIN sys_user t4 on t3.user_id= t4.id
     </select>
 
 
