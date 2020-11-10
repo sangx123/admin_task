@@ -587,4 +587,47 @@ public class TaskController extends AppBaseController {
         return success(model);
     }
 
+    @PostMapping(value = "/getUserTaskById")
+    @ApiOperation(value="获取UserTask的详情")
+    //任务详情返回，任务标题，任务创建人，创建时间，所需任务人数，任务价格，申请截止日期，第一次任务提交截止日期
+    //任务查看人数，正在申请中的人数，【已进行中的任务人数】，已完成任务的人数，申诉中的任务人数，已完成的任务
+    public AppResult<UserTask> getUserTaskById(@RequestHeader("userToken") String userToken, @RequestBody TaskParam taskParam){
+        UserTask model=userTaskService.queryUserTaskById(taskParam.getId());
+        return success(model);
+    }
+
+
+    @PostMapping(value = "/isBusinessAllowUserTask")
+    @ApiOperation(value="是否同意用户申请")
+    //任务详情返回，任务标题，任务创建人，创建时间，所需任务人数，任务价格，申请截止日期，第一次任务提交截止日期
+    //任务查看人数，正在申请中的人数，【已进行中的任务人数】，已完成任务的人数，申诉中的任务人数，已完成的任务
+    /***
+     * 需要传入userTaskId 获取数据用来验证是否属实
+     * 需要跟当前token对应的id是一致的
+     *
+     */
+    public AppResult<String> isBusinessAllowUserTask(@RequestHeader("userToken") String userToken, @RequestBody TaskParam taskParam){
+        int userId = UserTokenManager.getInstance().getUserIdFromToken(userToken).intValue();
+        UserTask model=userTaskService.queryUserTaskById(taskParam.getId());
+        if(model==null){
+            return fail(AppExecStatus.FAIL, "没有该用户任务表数据");
+        }
+        BusinessTask businessTask=businessTaskService.queryById(model.getBusinessTaskId());
+        if(businessTask==null){
+            return fail(AppExecStatus.FAIL, "没有该商户任务记录");
+        }
+        if(businessTask.getUserid()!=userId){
+            return fail(AppExecStatus.FAIL, "没有权限");
+        }
+        if(taskParam.isAgree()){
+            model.setUserTaskStatus(1);
+            model.setBusinessAgreeApplyTime(new Date());
+            userTaskService.updateSelective(model);
+            return success("已同意");
+        }else {
+            userTaskService.deleteById(Long.valueOf(model.getId()));
+            return success("已忽略");
+        }
+
+    }
 }

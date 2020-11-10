@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 public interface UserTaskMapper extends MyMapper<UserTask> {
-    List<BusinessTask> queryUserTask(@Param("userid")int userid, @Param("state")int state);
+    //List<BusinessTask> queryUserTask(@Param("userid")int userid, @Param("state")int state);
 
     UserTask queryUserHasApplyTask(@Param("userid")int userid,@Param("taskid")int taskid);
 
@@ -20,4 +20,7 @@ public interface UserTaskMapper extends MyMapper<UserTask> {
     List<UserTask> queryFailedUserTaskListByBusinessTaskId(@Param("businessTaskId")int businessTaskId);
 
     List<UserTask> queryUserTaskListByBusinessTaskIdAndStatus(@Param("businessTaskId")int businessTaskId,@Param("user_task_status")int user_task_status);
+
+
+    UserTask queryUserTaskById (@Param("id")int id);
 }

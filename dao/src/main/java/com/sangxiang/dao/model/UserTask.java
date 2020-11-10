@@ -11,7 +11,7 @@ import java.util.Date;
 public class UserTask extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     private Integer userId;
 
@@ -41,13 +41,6 @@ public class UserTask extends BaseEntity {
 
     private Integer userQuitTask;
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public Integer getUserId() {
         return userId;
@@ -181,5 +174,13 @@ public class UserTask extends BaseEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

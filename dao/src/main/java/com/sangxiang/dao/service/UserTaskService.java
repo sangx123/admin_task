@@ -27,4 +27,11 @@ public interface UserTaskService extends BaseService<UserTask> {
 
     //查询所有的失败的结果(审核失败6，申诉失败10)
     List<UserTask> queryFailedUserTaskListByBusinessTaskId(@Param("businessTaskId")int businessTaskId);
+
+    /***
+     * 根据主键查询信息
+     * @param id
+     * @return
+     */
+    UserTask queryUserTaskById(int id);
 }

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.sangxiang.dao.mapper.UserTaskMapper" >
     <resultMap id="BaseResultMap" type="com.sangxiang.dao.model.UserTask" >
-        <result column="id" property="id" jdbcType="INTEGER" />
+        <result column="id" property="id" jdbcType="BIGINT" />
         <result column="user_id" property="userId" jdbcType="INTEGER" />
         <result column="business_task_id" property="businessTaskId" jdbcType="INTEGER" />
         <result column="user_task_status" property="userTaskStatus" jdbcType="INTEGER" />
@@ -31,13 +31,7 @@
 <!--            <result column="name" property="name" jdbcType="VARCHAR" />-->
 <!--        </association>-->
   </resultMap>
-  <select id="queryUserTask"  resultType="com.sangxiang.dao.model.BusinessTask">
-          select t1.user_task_status ,t2.title from  user_task  t1 left join business_task t2
-          on t1.business_task_id=t2.id where t1.user_id=#{userid} AND
-          t1.user_task_status=#{state}
-
-    </select>
-
+    <!--    查询userid是否已申请businessTaskId的任务-->
    <select id="queryUserHasApplyTask"  resultType="com.sangxiang.dao.model.UserTask">
          SELECT t3.*,t4.id r_id,t4.name FROM ( select t1.* from  user_task  t1 left join business_task t2
           on t1.business_task_id=t2.id where t1.user_id=#{userid} AND
@@ -48,24 +42,40 @@
                 select * from  user_task  where business_task_id=#{businessTaskId}
            ) t3 LEFT JOIN sys_user t4 on t3.user_id= t4.id
     </select>
-
+    <!--    查询businessTaskId任务下状态为user_task_status人数列表-->
     <select id="queryUserTaskListByBusinessTaskIdAndStatus"  resultType="com.sangxiang.dao.model.UserTask">
      SELECT t3.*,t4.id r_id,t4.name FROM (
               select * from  user_task  where business_task_id=#{businessTaskId} AND user_task_status=#{user_task_status}
               ) t3 LEFT JOIN sys_user t4 on t3.user_id= t4.id
     </select>
-
+    <!--    查询businessTaskId任务下成功人数列表,审核成功状态为5，审核超时状态4，申诉成功状态为9，申诉超时状态为8-->
     <select id="querySuccessedUserTaskListByBusinessTaskId"  resultType="com.sangxiang.dao.model.UserTask">
  SELECT t3.*,t4.id r_id,t4.name FROM (
           select * from  user_task  where business_task_id=#{businessTaskId} AND user_task_status in (4,5,8,9)
           ) t3 LEFT JOIN sys_user t4 on t3.user_id= t4.id
     </select>
-
+    <!--    查询businessTaskId任务下失败人数列表,审核失败状态为6，申诉失败状态为9-->
     <select id="queryFailedUserTaskListByBusinessTaskId"  resultType="com.sangxiang.dao.model.UserTask">
     SELECT t3.*,t4.id r_id,t4.name FROM (
           select * from  user_task  where business_task_id=#{businessTaskId} AND user_task_status in (6,10)
            ) t3 LEFT JOIN sys_user t4 on t3.user_id= t4.id
     </select>
-
-
+    <!--根据usertaskId主键获取用户的一些信息 -->
+    <select id="queryUserTaskById"  resultType="com.sangxiang.dao.model.UserTask">
+    SELECT t3.*,t4.id r_id,t4.name FROM (
+                select * from  user_task  where id=#{id}
+           ) t3 LEFT JOIN sys_user t4 on t3.user_id= t4.id
+    </select>
 </mapper>
+
+<!--        状态0：申请中(待商家同意)-->
+<!--        状态1:   用户待提交（商家同意申请通过，任务进行中）-->
+<!--        状态2:  用户待提交超过了任务截止时间(任务提交超时，用户可进行任务提交超时申诉)（任务完成超时，已结束）-->
+<!--        状态3:   商户审核中，（用户已提交任务，3天时间倒计时）-->
+<!--        状态4:   商户审核超时完成(任务状态为已完成，用户总金额+任务奖励)(用户查询审核状态的时候，超时就设置任务状态为商户审核超时，或者商家查询任务状态的时候，超时就设置为申请超时)-->
+<!--        状态5:   商户审核成功（任务已完成，用户总金额+任务奖励）-->
+<!--        状态6：用户审核失败，（商家提供审核失败原因内容，审核失败时间）（用户可通过进行申诉，需提供申诉时间，申诉内容）（任务审核失败，已结束）-->
+<!--        状态7：重新提交给商户申诉中，审核失败，待申诉，提交的内容，提交时间，申诉内容，申诉时间-->
+<!--        状态8:  商户超时未审核 (任务已完成，用户总金额+任务奖励)-->
+<!--        状态9:  申诉成功，(任务已完成，用户总金额+任务奖励)-->
+<!--        状态10:   申诉失败，（任务申诉失败，已结束）-->

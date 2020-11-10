@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -40,13 +41,14 @@ import java.util.List;
     public PageInfo<BusinessTask> getUserTask(int userid,int state,int pageNum,int pageSize) {
         //分页
         PageHelper.startPage(pageNum,pageSize);
-        List<BusinessTask> list = userTaskMapper.queryUserTask(userid,state);
-       return new PageInfo<>(list);
+        //List<BusinessTask> list = userTaskMapper.queryUserTask(userid,state);
+       return new PageInfo<>(new ArrayList<>());
     }
 
     @Override
     public List<BusinessTask> getUserTask(int userid, int status) {
-        return userTaskMapper.queryUserTask(userid,status);
+        //return userTaskMapper.queryUserTask(userid,status);
+        return new ArrayList<>();
     }
 
     @Override
@@ -72,5 +74,10 @@ import java.util.List;
     @Override
     public List<UserTask> queryFailedUserTaskListByBusinessTaskId(int businessTaskId) {
         return userTaskMapper.queryFailedUserTaskListByBusinessTaskId(businessTaskId);
+    }
+
+    @Override
+    public UserTask queryUserTaskById(int id) {
+        return userTaskMapper.queryUserTaskById(id);
     }
 }
