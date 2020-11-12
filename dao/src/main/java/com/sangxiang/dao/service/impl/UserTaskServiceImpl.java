@@ -82,7 +82,7 @@ import java.util.List;
     }
 
     @Override
-    public List<UserTask> getMyJieShouTask(int userid) {
-        return userTaskMapper.getMyJieShouTask(userid);
+    public List<UserTask> getMyJieShouTaskQuanBu(int userid) {
+        return userTaskMapper.getMyJieShouTaskQuanBu(userid);
     }
 }

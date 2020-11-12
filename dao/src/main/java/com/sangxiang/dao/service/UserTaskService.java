@@ -41,5 +41,5 @@ public interface UserTaskService extends BaseService<UserTask> {
      * @param userid
      * @return
      */
-    List<UserTask> getMyJieShouTask(int userid);
+    List<UserTask> getMyJieShouTaskQuanBu(int userid);
 }

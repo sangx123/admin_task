@@ -632,12 +632,11 @@ public class TaskController extends AppBaseController {
     }
 
 
-    @PostMapping(value = "/getMyJieshouTaskList")
+    @PostMapping(value = "/getMyJieShouTaskQuanBuList")
     @ApiOperation(value="我接收的任务列表")
-    public AppResult<List<UserTask>> getMyJieshouTaskList(@RequestHeader("userToken") String userToken){
+    public AppResult<List<UserTask>> getMyJieShouTaskQuanBuList(@RequestHeader("userToken") String userToken){
         int userId = UserTokenManager.getInstance().getUserIdFromToken(userToken).intValue();
-        List<UserTask> list= userTaskService.getMyJieShouTask(userId);
-        //SysUser model=sysUserService.queryUserRole(6);
+        List<UserTask> list= userTaskService.getMyJieShouTaskQuanBu(userId);
         return success(list);
     }
 }

@@ -86,7 +86,7 @@
     </select>
 
     <!--根据usertaskId主键获取用户的一些信息 -->
-    <select id="getMyJieShouTask"  resultMap="BaseResultMap">
+    <select id="getMyJieShouTaskQuanBu"  resultMap="BaseResultMap">
     SELECT t3.*,
     t4.name FROM (
     select  t2.id p_id,
