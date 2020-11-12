@@ -34,4 +34,12 @@ public interface UserTaskService extends BaseService<UserTask> {
      * @return
      */
     UserTask queryUserTaskById(int id);
+
+
+    /**
+     * 获取用户接收到的任务列表
+     * @param userid
+     * @return
+     */
+    List<UserTask> getMyJieShouTask(int userid);
 }

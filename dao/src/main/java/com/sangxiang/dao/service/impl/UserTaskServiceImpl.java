@@ -80,4 +80,9 @@ import java.util.List;
     public UserTask queryUserTaskById(int id) {
         return userTaskMapper.queryUserTaskById(id);
     }
+
+    @Override
+    public List<UserTask> getMyJieShouTask(int userid) {
+        return userTaskMapper.getMyJieShouTask(userid);
+    }
 }

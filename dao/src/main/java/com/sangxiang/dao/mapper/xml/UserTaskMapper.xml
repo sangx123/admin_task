@@ -18,13 +18,31 @@
         <result column="business_audit_second_result" property="businessAuditSecondResult" jdbcType="VARCHAR" />
         <result column="user_quit_task" property="userQuitTask" jdbcType="INTEGER" />
         <result column="name" property="name" jdbcType="VARCHAR" />
-        <association property="businessTask" javaType="com.sangxiang.dao.model.BusinessTask">
-          <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-          <result column="title" jdbcType="VARCHAR" property="title" />
-          <result column="goods_price" jdbcType="REAL" property="goodsPrice" />
-          <result column="worker_Num" jdbcType="INTEGER" property="workerNum" />
-          <result column="worker_price" jdbcType="REAL" property="workerPrice" />
-          <result column="total_price" jdbcType="REAL" property="totalPrice" />
+        <!--resultMap:
+                        associattion 是关系 一个学生对象中包含有一个班级对象
+
+                        collection 是集合 一个班级对象包含有多个学生对象
+
+                        ResultType 自动映射
+
+                        ResultMap 手动映射-->
+        <association property="task" javaType="com.sangxiang.dao.model.BusinessTask">
+            <result column="p_id" property="id" jdbcType="INTEGER" />
+            <result column="userid" property="userid" jdbcType="INTEGER" />
+            <result column="create_time" property="createTime" jdbcType="VARCHAR" />
+            <result column="title" property="title" jdbcType="VARCHAR" />
+            <result column="content" property="content" jdbcType="VARCHAR" />
+            <result column="worker_price" property="workerPrice" jdbcType="DECIMAL" />
+            <result column="needPeopleNum" property="needpeoplenum" jdbcType="INTEGER" />
+            <result column="pay_status" property="payStatus" jdbcType="INTEGER" />
+            <result column="status" property="status" jdbcType="INTEGER" />
+            <result column="needTotalPay" property="needtotalpay" jdbcType="DECIMAL" />
+            <result column="typeId" property="typeid" jdbcType="INTEGER" />
+            <result column="task_limit" property="taskLimit" jdbcType="VARCHAR" />
+            <result column="apply_end_time" property="applyEndTime" jdbcType="VARCHAR" />
+            <result column="work_end_time" property="workEndTime" jdbcType="VARCHAR" />
+            <result column="aduit_time" property="aduitTime" jdbcType="INTEGER" />
+            <result column="orderId" property="orderid" jdbcType="VARCHAR" />
         </association>
 <!--        <association property="sysUser" javaType="com.sangxiang.dao.model.SysUser">-->
 <!--            <id column="r_id" property="id" jdbcType="INTEGER" />-->
@@ -32,7 +50,7 @@
 <!--        </association>-->
   </resultMap>
     <!--    查询userid是否已申请businessTaskId的任务-->
-   <select id="queryUserHasApplyTask"  resultType="com.sangxiang.dao.model.UserTask">
+   <select id="queryUserHasApplyTask"  resultMap="BaseResultMap">
          SELECT t3.*,t4.id r_id,t4.name FROM ( select t1.* from  user_task  t1 left join business_task t2
           on t1.business_task_id=t2.id where t1.user_id=#{userid} AND
           t1.business_task_id=#{taskid} ) t3 LEFT JOIN sys_user t4 on t3.user_id= t4.id
@@ -66,6 +84,31 @@
                 select * from  user_task  where id=#{id}
            ) t3 LEFT JOIN sys_user t4 on t3.user_id= t4.id
     </select>
+
+    <!--根据usertaskId主键获取用户的一些信息 -->
+    <select id="getMyJieShouTask"  resultMap="BaseResultMap">
+    SELECT t3.*,
+    t4.name FROM (
+    select  t2.id p_id,
+    t2.userid,
+    t2.create_time,
+    t2.title,
+    t2.content,
+    t2.worker_price,
+    t2.needPeopleNum,
+    t2.pay_status,
+    t2.status,
+    t2.needTotalPay,
+    t2.typeId,
+    t2.task_limit,
+    t2.apply_end_time,
+    t2.work_end_time,
+    t2.aduit_time,
+    t2.orderId,t1.* from  user_task t1 left join business_task t2 on t1.business_task_id=t2.id  where t1.user_id=#{userid} and user_task_status>0
+           ) t3 LEFT JOIN sys_user t4 on t3.user_id= t4.id
+    </select>
+
+
 </mapper>
 
 <!--        状态0：申请中(待商家同意)-->

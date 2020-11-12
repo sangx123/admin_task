@@ -16,7 +16,7 @@
       <result column="r_description" property="description" jdbcType="VARCHAR" />
     </association>
   </resultMap>
-  <select id="queryUserRole" parameterType="int" resultType="com.sangxiang.dao.model.SysUser">
+  <select id="queryUserRole" parameterType="int" resultMap="BaseResultMap">
           SELECT t1.*,t3.id r_id,t3.role,t3.description
           from  sys_user t1
           inner join sys_user_role_relationship t2 on t1.id=t2.user_id

@@ -36,28 +36,28 @@ public class LoginController {
 //        return "login";
 //    }
 //
-//    // 登录提交地址和applicationontext-shiro.xml配置的loginurl一致。 (配置文件方式的说法)
-//    @RequestMapping(value = "/login", method = RequestMethod.POST)
-//    public String login(HttpServletRequest request, Map<String, Object> map)
-//            throws Exception {
-//
-//        // 登录失败从request中获取shiro处理的异常信息。shiroLoginFailure:就是shiro异常类的全类名.
-//        Object exception = request.getAttribute("shiroLoginFailure");
-//        String msg = "";
-//        if (exception != null){
-//            if (UnknownAccountException.class.isInstance(exception)) {
-//                msg = "提示->账号不存在";
-//            } else if (IncorrectCredentialsException.class.isInstance(exception)) {
-//                msg = "提示->密码不正确";
-//            } else {
-//                msg = "提示->未知错误";
-//            }
-//            map.put("msg", msg);
-//            return "login";
-//        }
-//        //如果已经登录，直接跳转主页面
-//        return "index";
-//    }
+    // 登录提交地址和applicationontext-shiro.xml配置的loginurl一致。 (配置文件方式的说法)
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    public String login(HttpServletRequest request, Map<String, Object> map)
+            throws Exception {
+
+        // 登录失败从request中获取shiro处理的异常信息。shiroLoginFailure:就是shiro异常类的全类名.
+        Object exception = request.getAttribute("shiroLoginFailure");
+        String msg = "";
+        if (exception != null){
+            if (UnknownAccountException.class.isInstance(exception)) {
+                msg = "提示->账号不存在";
+            } else if (IncorrectCredentialsException.class.isInstance(exception)) {
+                msg = "提示->密码不正确";
+            } else {
+                msg = "提示->未知错误";
+            }
+            map.put("msg", msg);
+            return "login";
+        }
+        //如果已经登录，直接跳转主页面
+        return "index";
+    }
 
     //主页
     @RequestMapping({"/","/index"})
