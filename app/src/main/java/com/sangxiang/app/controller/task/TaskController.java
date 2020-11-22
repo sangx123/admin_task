@@ -23,6 +23,7 @@ import com.sangxiang.model.ApplyTaskParam;
 import com.sangxiang.model.Login.HomeTaskParam;
 import com.sangxiang.model.Task.TaskItem;
 import com.sangxiang.model.Task.TaskParam;
+import com.sangxiang.model.UserCenter.MyJieShouTaskParam;
 import com.sangxiang.model.UserCenter.UserTaskParam;
 import com.sangxiang.util.DateUtils;
 import io.swagger.annotations.ApiOperation;
@@ -628,15 +629,42 @@ public class TaskController extends AppBaseController {
             userTaskService.deleteById(Long.valueOf(model.getId()));
             return success("已忽略");
         }
-
     }
 
 
     @PostMapping(value = "/getMyJieShouTaskQuanBuList")
-    @ApiOperation(value="我接收的任务列表")
-    public AppResult<List<UserTask>> getMyJieShouTaskQuanBuList(@RequestHeader("userToken") String userToken){
+    @ApiOperation(value="我接收的任务列表-全部")
+    public AppResult<List<UserTask>> getMyJieShouTaskQuanBuList(@RequestHeader("userToken") String userToken , @RequestBody MyJieShouTaskParam param){
         int userId = UserTokenManager.getInstance().getUserIdFromToken(userToken).intValue();
-        List<UserTask> list= userTaskService.getMyJieShouTaskQuanBu(userId);
-        return success(list);
+
+        if(param.getType()==0){
+            //全部
+            List<UserTask> list= userTaskService.getMyJieShouTaskQuanBu(userId);
+            return success(list);
+        }
+        if(param.getType()==1){
+            //待提交
+            List<UserTask> list= userTaskService.getMyJieShouTaskDaiTiJiao(userId);
+            return success(list);
+        }
+
+        if(param.getType()==2){
+            //审核中
+            List<UserTask> list= userTaskService.getMyJieShouTaskShengHe(userId);
+            return success(list);
+        }
+        if(param.getType()==3){
+            //审核成功
+            List<UserTask> list= userTaskService.getMyJieShouTaskShenHeSuccess(userId);
+            return success(list);
+        }
+        if(param.getType()==4){
+            //审核失败
+            List<UserTask> list= userTaskService.getMyJieShouTaskShenHeFail(userId);
+            return success(list);
+        }
+
+        return fail(AppExecStatus.FAIL,"参数错误");
     }
+
 }

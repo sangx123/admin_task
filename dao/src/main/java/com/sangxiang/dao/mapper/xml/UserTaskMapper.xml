@@ -86,6 +86,7 @@
     </select>
 
     <!--根据usertaskId主键获取用户的一些信息 -->
+    <!--用户任务列表-全部 -->
     <select id="getMyJieShouTaskQuanBu"  resultMap="BaseResultMap">
     SELECT t3.*,
     t4.name FROM (
@@ -108,7 +109,101 @@
            ) t3 LEFT JOIN sys_user t4 on t3.user_id= t4.id
     </select>
 
+    <!--根据usertaskId主键获取用户的一些信息 -->
+    <!--用户任务列表-待提交 -->
+    <select id="getMyJieShouTaskDaiTiJiao"  resultMap="BaseResultMap">
+    SELECT t3.*,
+    t4.name FROM (
+    select  t2.id p_id,
+    t2.userid,
+    t2.create_time,
+    t2.title,
+    t2.content,
+    t2.worker_price,
+    t2.needPeopleNum,
+    t2.pay_status,
+    t2.status,
+    t2.needTotalPay,
+    t2.typeId,
+    t2.task_limit,
+    t2.apply_end_time,
+    t2.work_end_time,
+    t2.aduit_time,
+    t2.orderId,t1.* from  user_task t1 left join business_task t2 on t1.business_task_id=t2.id  where t1.user_id=#{userid} and user_task_status=1
+           ) t3 LEFT JOIN sys_user t4 on t3.user_id= t4.id
+    </select>
 
+    <!--根据usertaskId主键获取用户的一些信息 -->
+    <!--用户任务列表-审核中-->
+    <select id="getMyJieShouTaskShengHe"  resultMap="BaseResultMap">
+    SELECT t3.*,
+    t4.name FROM (
+    select  t2.id p_id,
+    t2.userid,
+    t2.create_time,
+    t2.title,
+    t2.content,
+    t2.worker_price,
+    t2.needPeopleNum,
+    t2.pay_status,
+    t2.status,
+    t2.needTotalPay,
+    t2.typeId,
+    t2.task_limit,
+    t2.apply_end_time,
+    t2.work_end_time,
+    t2.aduit_time,
+    t2.orderId,t1.* from  user_task t1 left join business_task t2 on t1.business_task_id=t2.id  where t1.user_id=#{userid} and user_task_status=3
+           ) t3 LEFT JOIN sys_user t4 on t3.user_id= t4.id
+    </select>
+
+    <!--根据usertaskId主键获取用户的一些信息 -->
+    <!--用户任务列表-审核成功 -->
+    <select id="getMyJieShouTaskShenHeSuccess"  resultMap="BaseResultMap">
+    SELECT t3.*,
+    t4.name FROM (
+    select  t2.id p_id,
+    t2.userid,
+    t2.create_time,
+    t2.title,
+    t2.content,
+    t2.worker_price,
+    t2.needPeopleNum,
+    t2.pay_status,
+    t2.status,
+    t2.needTotalPay,
+    t2.typeId,
+    t2.task_limit,
+    t2.apply_end_time,
+    t2.work_end_time,
+    t2.aduit_time,
+    t2.orderId,t1.* from  user_task t1 left join business_task t2 on t1.business_task_id=t2.id  where t1.user_id=#{userid} and user_task_status in (5,4)
+           ) t3 LEFT JOIN sys_user t4 on t3.user_id= t4.id
+    </select>
+
+    <!--根据usertaskId主键获取用户的一些信息 -->
+    <!--用户任务列表-审核失败 -->
+    <select id="getMyJieShouTaskShenHeFail"  resultMap="BaseResultMap">
+    SELECT t3.*,
+    t4.name FROM (
+    select  t2.id p_id,
+    t2.userid,
+    t2.create_time,
+    t2.title,
+    t2.content,
+    t2.worker_price,
+    t2.needPeopleNum,
+    t2.pay_status,
+    t2.status,
+    t2.needTotalPay,
+    t2.typeId,
+    t2.task_limit,
+    t2.apply_end_time,
+    t2.work_end_time,
+    t2.aduit_time,
+    t2.orderId,t1.* from  user_task t1 left join business_task t2 on t1.business_task_id=t2.id  where t1.user_id=#{userid} and user_task_status=6
+           ) t3 LEFT JOIN sys_user t4 on t3.user_id= t4.id
+    </select>
 </mapper>
 
 <!--        状态0：申请中(待商家同意)-->

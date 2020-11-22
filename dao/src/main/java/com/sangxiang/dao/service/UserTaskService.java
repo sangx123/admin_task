@@ -37,9 +37,38 @@ public interface UserTaskService extends BaseService<UserTask> {
 
 
     /**
-     * 获取用户接收到的任务列表
+     * 获取用户接收到的任务列表--全部
      * @param userid
      * @return
      */
     List<UserTask> getMyJieShouTaskQuanBu(int userid);
+
+    /**
+     * 获取用户接收到的任务列表--待提交
+     * @param userid
+     * @return
+     */
+    List<UserTask> getMyJieShouTaskDaiTiJiao(int userid);
+
+    /**
+     * 获取用户接收到的任务列表--审核中
+     * @param userid
+     * @return
+     */
+    List<UserTask> getMyJieShouTaskShengHe(int userid);
+
+    /**
+     * 获取用户接收到的任务列表--审核成功
+     * @param userid
+     * @return
+     */
+    List<UserTask> getMyJieShouTaskShenHeSuccess(int userid);
+
+    /**
+     * 获取用户接收到的任务列表--审核失败
+     * @param userid
+     * @return
+     */
+    List<UserTask> getMyJieShouTaskShenHeFail(int userid);
+
 }

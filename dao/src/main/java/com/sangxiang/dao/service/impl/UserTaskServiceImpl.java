@@ -85,4 +85,24 @@ import java.util.List;
     public List<UserTask> getMyJieShouTaskQuanBu(int userid) {
         return userTaskMapper.getMyJieShouTaskQuanBu(userid);
     }
+
+    @Override
+    public List<UserTask> getMyJieShouTaskDaiTiJiao(int userid) {
+        return userTaskMapper.getMyJieShouTaskDaiTiJiao(userid);
+    }
+
+    @Override
+    public List<UserTask> getMyJieShouTaskShengHe(int userid) {
+        return userTaskMapper.getMyJieShouTaskShengHe(userid);
+    }
+
+    @Override
+    public List<UserTask> getMyJieShouTaskShenHeSuccess(int userid) {
+        return userTaskMapper.getMyJieShouTaskShenHeSuccess(userid);
+    }
+
+    @Override
+    public List<UserTask> getMyJieShouTaskShenHeFail(int userid) {
+        return userTaskMapper.getMyJieShouTaskShenHeFail(userid);
+    }
 }

@@ -26,4 +26,13 @@ public interface UserTaskMapper extends MyMapper<UserTask> {
 
 
     List<UserTask> getMyJieShouTaskQuanBu(@Param("userid")int userid);
+
+    List<UserTask> getMyJieShouTaskDaiTiJiao(@Param("userid")int userid);
+
+    List<UserTask> getMyJieShouTaskShengHe(@Param("userid")int userid);
+
+    List<UserTask> getMyJieShouTaskShenHeSuccess(@Param("userid")int userid);
+
+    List<UserTask> getMyJieShouTaskShenHeFail(@Param("userid")int userid);
+
 }
