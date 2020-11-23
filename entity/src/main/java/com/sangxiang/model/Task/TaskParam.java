@@ -16,6 +16,7 @@ public class TaskParam {
 
     private boolean agree;
 
+
     public int getUserId() {
         return userId;
     }

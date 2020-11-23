@@ -23,6 +23,7 @@ import com.sangxiang.model.ApplyTaskParam;
 import com.sangxiang.model.Login.HomeTaskParam;
 import com.sangxiang.model.Task.TaskItem;
 import com.sangxiang.model.Task.TaskParam;
+import com.sangxiang.model.Task.UserSubmitTaskParam;
 import com.sangxiang.model.UserCenter.MyJieShouTaskParam;
 import com.sangxiang.model.UserCenter.UserTaskParam;
 import com.sangxiang.util.DateUtils;
@@ -667,4 +668,21 @@ public class TaskController extends AppBaseController {
         return fail(AppExecStatus.FAIL,"参数错误");
     }
 
+
+
+
+    @PostMapping(value = "/userTaskFirstSubmit")
+    @ApiOperation(value="提交任务")
+    public AppResult<String> userTaskFirstSubmit(@RequestHeader("userToken") String userToken, @RequestBody UserSubmitTaskParam param){
+        int userId = UserTokenManager.getInstance().getUserIdFromToken(userToken).intValue();
+        UserTask task=  userTaskService.queryUserTaskById(param.getId());
+        if(param.getContent().isEmpty()){
+            return fail(AppExecStatus.FAIL,"请提交任务内容");
+        }
+        task.setUserFirstSubmitTaskContent(param.getContent());
+        task.setUserFirstSubmitTaskTime(new Date());
+        task.setUserTaskStatus(3);
+        userTaskService.updateSelective(task);
+        return success("提交成功！");
+    }
 }
