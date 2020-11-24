@@ -686,6 +686,8 @@ public class TaskController extends AppBaseController {
         userTaskService.updateSelective(task);
         return success("提交成功！");
     }
+
+
     @PostMapping(value = "/businessAuditFirstSubmit")
     @ApiOperation(value="商户审核第一次提交的任务")
     public AppResult<String> businessAuditFirstSubmit(@RequestHeader("userToken") String userToken, @RequestBody BusinessFirstAuditParam param){
@@ -711,5 +713,18 @@ public class TaskController extends AppBaseController {
 
     }
 
-
+    @PostMapping(value = "/userTaskSecondSubmit")
+    @ApiOperation(value="用户提交申诉")
+    public AppResult<String> userTaskSecondSubmit(@RequestHeader("userToken") String userToken, @RequestBody UserSubmitTaskParam param){
+        int userId = UserTokenManager.getInstance().getUserIdFromToken(userToken).intValue();
+        UserTask task=  userTaskService.queryUserTaskById(param.getId());
+        if(param.getContent().isEmpty()){
+            return fail(AppExecStatus.FAIL,"请提交申诉内容");
+        }
+        task.setUserFirstSubmitTaskContent(param.getContent());
+        task.setUserFirstSubmitTaskTime(new Date());
+        task.setUserTaskStatus(7);
+        userTaskService.updateSelective(task);
+        return success("已提交申诉！");
+    }
 }
