@@ -24,6 +24,7 @@ import com.sangxiang.model.Login.HomeTaskParam;
 import com.sangxiang.model.Task.TaskItem;
 import com.sangxiang.model.Task.TaskParam;
 import com.sangxiang.model.Task.UserSubmitTaskParam;
+import com.sangxiang.model.UserCenter.BusinessFirstAuditParam;
 import com.sangxiang.model.UserCenter.MyJieShouTaskParam;
 import com.sangxiang.model.UserCenter.UserTaskParam;
 import com.sangxiang.util.DateUtils;
@@ -672,7 +673,7 @@ public class TaskController extends AppBaseController {
 
 
     @PostMapping(value = "/userTaskFirstSubmit")
-    @ApiOperation(value="提交任务")
+    @ApiOperation(value="用户提交任务")
     public AppResult<String> userTaskFirstSubmit(@RequestHeader("userToken") String userToken, @RequestBody UserSubmitTaskParam param){
         int userId = UserTokenManager.getInstance().getUserIdFromToken(userToken).intValue();
         UserTask task=  userTaskService.queryUserTaskById(param.getId());
@@ -685,4 +686,30 @@ public class TaskController extends AppBaseController {
         userTaskService.updateSelective(task);
         return success("提交成功！");
     }
+    @PostMapping(value = "/businessAuditFirstSubmit")
+    @ApiOperation(value="商户审核第一次提交的任务")
+    public AppResult<String> businessAuditFirstSubmit(@RequestHeader("userToken") String userToken, @RequestBody BusinessFirstAuditParam param){
+        int userId = UserTokenManager.getInstance().getUserIdFromToken(userToken).intValue();
+        UserTask task=  userTaskService.queryUserTaskById(param.getId());
+        if(param.isAgree()) {
+            //审核成功-要扣除任务金额，并给用户增加金额
+            task.setBusinessAuditFirstTime(new Date());
+            task.setUserTaskStatus(5);
+            userTaskService.updateSelective(task);
+            return success("已同意用户完成任务！");
+        }else {
+            if(param.getReason().isEmpty()){
+                return fail(AppExecStatus.FAIL,"请填写不通过原因");
+            }
+            //审核失败-只修改任务状态，不做任何操作
+            task.setBusinessAuditFirstTime(new Date());
+            task.setBusinessAuditFirstResult(param.getReason());
+            task.setUserTaskStatus(6);
+            userTaskService.updateSelective(task);
+            return success("已提交用户，任务失败原因！");
+        }
+
+    }
+
+
 }
