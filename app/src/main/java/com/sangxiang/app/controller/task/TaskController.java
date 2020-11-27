@@ -29,6 +29,7 @@ import com.sangxiang.model.UserCenter.MyJieShouTaskParam;
 import com.sangxiang.model.UserCenter.UserTaskParam;
 import com.sangxiang.util.DateUtils;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.models.auth.In;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -124,69 +125,10 @@ public class TaskController extends AppBaseController {
 
     ) {
         int userId = UserTokenManager.getInstance().getUserIdFromToken(userToken).intValue();
-        List<String> imageUrlList = new ArrayList<String>();
-        File uploadDirectory = new File(imagePath);
-        if (uploadDirectory.exists()) {
-            if (!uploadDirectory.isDirectory()) {
-                uploadDirectory.delete();
-            }
-        } else {
-            uploadDirectory.mkdir();
+        content=convertUpLoadFileAndContent(files,content);
+        if(content.equals("0")){
+            return  fail(AppExecStatus.FAIL,"图片上传失败，请重新提交任务");
         }
-        //这里可以支持多文件上传
-        if (files != null && files.length >= 1) {
-            BufferedOutputStream bw = null;
-            try {
-                for (MultipartFile file : files) {
-                    String fileName = file.getOriginalFilename();
-                    //判断是否有文件且是否为图片文件
-                    if (fileName != null && !"".equalsIgnoreCase(fileName.trim()) && isImageFile(fileName)) {
-                        String imageName=DateUtils.format(new Date(),"yyyyMMddHHmmssSSS") + getFileType(fileName);
-                        String filePath=imagePath + "/" + imageName;
-                        //创建输出文件对象
-                        File outFile = new File(filePath);
-                        //拷贝文件到输出文件对象
-                        FileUtils.copyInputStreamToFile(file.getInputStream(), outFile);
-                        imageUrlList.add(imageURL+imageName);
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                return  fail(AppExecStatus.FAIL,"图片上传失败，请重新提交任务");
-            } finally {
-                try {
-                    if (bw != null) {
-                        bw.close();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        //将string转为model
-
-        List<TaskItem> list = new Gson().fromJson(content, new TypeToken<List<TaskItem>>(){}.getType());
-        //content=StringUtils.replceImgSrc(content,imageUrlList);
-        int count=0;
-        for (int i = 0; i <list.size() ; i++) {
-            if(list.get(i).getAttributes()!=null&&list.get(i).getAttributes().getEmbed()!=null&&list.get(i).getAttributes().getEmbed().getType()!=null&&list.get(i).getAttributes().getEmbed().getType().equals("image")){
-                list.get(i).getAttributes().getEmbed().setSource(imageUrlList.get(count++));
-                //判断下一个索引是否超出如果没有超出去掉\n
-                //暂时不能去掉\n否则报错
-                //                if(i+1<list.size()){
-                //                    TaskItem nextItem=list.get(i+1);
-                //                    nextItem.setInsert(nextItem.getInsert().substring(1));
-                //                }
-            }
-        }
-        //过滤空白项会报错，暂时不全部过滤
-        for (int i = 0; i <list.size() ; i++) {
-            if(list.get(i).getAttributes()==null&&list.get(i).getInsert().isEmpty()){
-                  list.remove(i);
-            }
-        }
-        content=new Gson().toJson(list);
         BusinessTask businessTask=new BusinessTask();
         businessTask.setTitle(title);
         businessTask.setContent(content);
@@ -674,13 +616,20 @@ public class TaskController extends AppBaseController {
 
     @PostMapping(value = "/userTaskFirstSubmit")
     @ApiOperation(value="用户提交任务")
-    public AppResult<String> userTaskFirstSubmit(@RequestHeader("userToken") String userToken, @RequestBody UserSubmitTaskParam param){
+    public AppResult<String> userTaskFirstSubmit(@RequestHeader("userToken") String userToken,  @RequestParam(value = "imageList[]") MultipartFile files[],
+                                                 String content,//内容
+                                                 String id ){
         int userId = UserTokenManager.getInstance().getUserIdFromToken(userToken).intValue();
-        UserTask task=  userTaskService.queryUserTaskById(param.getId());
-        if(param.getContent().isEmpty()){
+        if(content.isEmpty()){
             return fail(AppExecStatus.FAIL,"请提交任务内容");
         }
-        task.setUserFirstSubmitTaskContent(param.getContent());
+        content=convertUpLoadFileAndContent(files,content);
+        if(content.equals("0")){
+            return  fail(AppExecStatus.FAIL,"图片上传失败!!");
+        }
+        UserTask task=  userTaskService.queryUserTaskById(Integer.valueOf(id));
+
+        task.setUserFirstSubmitTaskContent(content);
         task.setUserFirstSubmitTaskTime(new Date());
         task.setUserTaskStatus(3);
         userTaskService.updateSelective(task);
@@ -690,23 +639,65 @@ public class TaskController extends AppBaseController {
 
     @PostMapping(value = "/businessAuditFirstSubmit")
     @ApiOperation(value="商户审核第一次提交的任务")
-    public AppResult<String> businessAuditFirstSubmit(@RequestHeader("userToken") String userToken, @RequestBody BusinessFirstAuditParam param){
+    public AppResult<String> businessAuditFirstSubmit(@RequestHeader("userToken") String userToken,@RequestParam(value = "imageList[]") MultipartFile files[],
+                                                      String content,//内容
+                                                      boolean agree,
+                                                      String id){
         int userId = UserTokenManager.getInstance().getUserIdFromToken(userToken).intValue();
-        UserTask task=  userTaskService.queryUserTaskById(param.getId());
-        if(param.isAgree()) {
+        UserTask task=  userTaskService.queryUserTaskById(Integer.valueOf(id));
+        if(agree) {
             //审核成功-要扣除任务金额，并给用户增加金额
             task.setBusinessAuditFirstTime(new Date());
             task.setUserTaskStatus(5);
             userTaskService.updateSelective(task);
             return success("已同意用户完成任务！");
         }else {
-            if(param.getReason().isEmpty()){
+            if(content.isEmpty()){
                 return fail(AppExecStatus.FAIL,"请填写不通过原因");
             }
+            content=convertUpLoadFileAndContent(files,content);
+            if(content.equals("0")){
+                return  fail(AppExecStatus.FAIL,"图片上传失败!!");
+            }
+
             //审核失败-只修改任务状态，不做任何操作
             task.setBusinessAuditFirstTime(new Date());
-            task.setBusinessAuditFirstResult(param.getReason());
+            task.setBusinessAuditFirstResult(content);
             task.setUserTaskStatus(6);
+            userTaskService.updateSelective(task);
+            return success("已提交用户，任务失败原因！");
+        }
+
+    }
+
+
+    @PostMapping(value = "/businessAuditSecondSubmit")
+    @ApiOperation(value="商户审核第二次提交的任务")
+    public AppResult<String> businessAuditSecondSubmit(@RequestHeader("userToken") String userToken,@RequestParam(value = "imageList[]") MultipartFile files[],
+                                                      String content,//内容
+                                                      boolean agree,
+                                                      String id){
+        int userId = UserTokenManager.getInstance().getUserIdFromToken(userToken).intValue();
+        UserTask task=  userTaskService.queryUserTaskById(Integer.valueOf(id));
+        if(agree) {
+            //审核成功-要扣除任务金额，并给用户增加金额
+            task.setBusinessAuditSecondTime(new Date());
+            task.setUserTaskStatus(9);
+            userTaskService.updateSelective(task);
+            return success("已同意用户完成任务！");
+        }else {
+            if(content.isEmpty()){
+                return fail(AppExecStatus.FAIL,"请填写不通过原因");
+            }
+            content=convertUpLoadFileAndContent(files,content);
+            if(content.equals("0")){
+                return  fail(AppExecStatus.FAIL,"图片上传失败!!");
+            }
+
+            //审核失败-只修改任务状态，不做任何操作
+            task.setBusinessAuditSecondTime(new Date());
+            task.setBusinessAuditSecondResult(content);
+            task.setUserTaskStatus(10);
             userTaskService.updateSelective(task);
             return success("已提交用户，任务失败原因！");
         }
@@ -715,16 +706,90 @@ public class TaskController extends AppBaseController {
 
     @PostMapping(value = "/userTaskSecondSubmit")
     @ApiOperation(value="用户提交申诉")
-    public AppResult<String> userTaskSecondSubmit(@RequestHeader("userToken") String userToken, @RequestBody UserSubmitTaskParam param){
+    public AppResult<String> userTaskSecondSubmit(@RequestHeader("userToken") String userToken,@RequestParam(value = "imageList[]") MultipartFile files[],
+                                                  String content,//内容
+                                                  String id){
         int userId = UserTokenManager.getInstance().getUserIdFromToken(userToken).intValue();
-        UserTask task=  userTaskService.queryUserTaskById(param.getId());
-        if(param.getContent().isEmpty()){
+        UserTask task=  userTaskService.queryUserTaskById(Integer.valueOf(id));
+        if(content.isEmpty()){
             return fail(AppExecStatus.FAIL,"请提交申诉内容");
         }
-        task.setUserFirstSubmitTaskContent(param.getContent());
-        task.setUserFirstSubmitTaskTime(new Date());
+        content=convertUpLoadFileAndContent(files,content);
+        if(content.equals("0")){
+            return  fail(AppExecStatus.FAIL,"图片上传失败!!");
+        }
+        task.setUserSecondSubmitTaskContent(content);
+        task.setUserSecondSubmitTaskTime(new Date());
         task.setUserTaskStatus(7);
         userTaskService.updateSelective(task);
         return success("已提交申诉！");
+    }
+
+
+    private String convertUpLoadFileAndContent(MultipartFile[] files,String content){
+        List<String> imageUrlList = new ArrayList<String>();
+        File uploadDirectory = new File(imagePath);
+        if (uploadDirectory.exists()) {
+            if (!uploadDirectory.isDirectory()) {
+                uploadDirectory.delete();
+            }
+        } else {
+            uploadDirectory.mkdir();
+        }
+        //这里可以支持多文件上传
+        if (files != null && files.length >= 1) {
+            BufferedOutputStream bw = null;
+            try {
+                for (MultipartFile file : files) {
+                    String fileName = file.getOriginalFilename();
+                    //判断是否有文件且是否为图片文件
+                    if (fileName != null && !"".equalsIgnoreCase(fileName.trim()) && isImageFile(fileName)) {
+                        String imageName=DateUtils.format(new Date(),"yyyyMMddHHmmssSSS") + getFileType(fileName);
+                        String filePath=imagePath + "/" + imageName;
+                        //创建输出文件对象
+                        File outFile = new File(filePath);
+                        //拷贝文件到输出文件对象
+                        FileUtils.copyInputStreamToFile(file.getInputStream(), outFile);
+                        imageUrlList.add(imageURL+imageName);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return "0";
+            } finally {
+                try {
+                    if (bw != null) {
+                        bw.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        //将string转为model
+
+        List<TaskItem> list = new Gson().fromJson(content, new TypeToken<List<TaskItem>>(){}.getType());
+        //content=StringUtils.replceImgSrc(content,imageUrlList);
+        int count=0;
+        for (int i = 0; i <list.size() ; i++) {
+            if(list.get(i).getAttributes()!=null&&list.get(i).getAttributes().getEmbed()!=null&&list.get(i).getAttributes().getEmbed().getType()!=null&&list.get(i).getAttributes().getEmbed().getType().equals("image")){
+                list.get(i).getAttributes().getEmbed().setSource(imageUrlList.get(count++));
+                //判断下一个索引是否超出如果没有超出去掉\n
+                //暂时不能去掉\n否则报错
+                //                if(i+1<list.size()){
+                //                    TaskItem nextItem=list.get(i+1);
+                //                    nextItem.setInsert(nextItem.getInsert().substring(1));
+                //                }
+            }
+        }
+        //过滤空白项会报错，暂时不全部过滤
+        for (int i = 0; i <list.size() ; i++) {
+            if(list.get(i).getAttributes()==null&&list.get(i).getInsert().isEmpty()){
+                list.remove(i);
+            }
+        }
+        content=new Gson().toJson(list);
+        return content;
     }
 }

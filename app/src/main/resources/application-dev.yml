@@ -52,7 +52,7 @@ upload:
     #imagePath: /usr/local/nginx/html/images/
 
     #正式服务器上的图片路径
-    imageURL: http://192.168.0.127/
+    imageURL: http://192.168.0.121/
 
     #mac上的本地路径
 
