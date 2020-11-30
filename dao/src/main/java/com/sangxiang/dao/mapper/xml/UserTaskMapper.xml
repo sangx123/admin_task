@@ -19,6 +19,8 @@
         <result column="user_quit_task" property="userQuitTask" jdbcType="INTEGER" />
         <result column="name" property="name" jdbcType="VARCHAR" />
         <result column="user_first_submit_task_timeout" property="userFirstSubmitTaskTimeout" jdbcType="TIMESTAMP" />
+        <result column="business_user_id" property="businessUserId" jdbcType="INTEGER" />
+
         <!--resultMap:
                         associattion 是关系 一个学生对象中包含有一个班级对象
 

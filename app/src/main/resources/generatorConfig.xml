@@ -49,7 +49,7 @@
             <!--<property name="modelOnly" value="false"/>-->
         <!--</table>-->
 
-        <table tableName="sys_user">
+        <table tableName="user_task">
         </table>
 
     </context>

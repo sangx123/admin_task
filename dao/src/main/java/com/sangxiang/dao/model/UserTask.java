@@ -41,6 +41,17 @@ public class UserTask extends BaseEntity {
 
     private Integer userQuitTask;
 
+
+    public Integer getBusinessUserId() {
+        return businessUserId;
+    }
+
+    public void setBusinessUserId(Integer businessUserId) {
+        this.businessUserId = businessUserId;
+    }
+
+    private Integer businessUserId;
+
     public Date getUserFirstSubmitTaskTimeout() {
         return userFirstSubmitTaskTimeout;
     }

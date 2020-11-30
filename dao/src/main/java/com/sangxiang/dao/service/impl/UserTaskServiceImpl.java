@@ -32,6 +32,7 @@ import java.util.List;
         UserTask userTask=new UserTask();
         userTask.setBusinessTaskId(task.getId());
         userTask.setUserId(userId);
+        userTask.setBusinessUserId(task.getUserid());
         userTask.setUserTaskStatus(0);
         userTask.setUserApplyTaskTime(new Date());
         userTask.setUserFirstSubmitTaskTimeout(DateUtils.stringToDateDefault(task.getWorkEndTime()));

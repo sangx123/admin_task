@@ -14,10 +14,7 @@ import com.sangxiang.app.AppBaseController;
 import com.sangxiang.app.AppExecStatus;
 import com.sangxiang.app.sdk.token.UserTokenManager;
 import com.sangxiang.app.utils.AppResult;
-import com.sangxiang.dao.model.AliNotify;
-import com.sangxiang.dao.model.BusinessTask;
-import com.sangxiang.dao.model.TaskMainTyle;
-import com.sangxiang.dao.model.UserTask;
+import com.sangxiang.dao.model.*;
 import com.sangxiang.dao.service.*;
 import com.sangxiang.model.ApplyTaskParam;
 import com.sangxiang.model.Login.HomeTaskParam;
@@ -204,6 +201,16 @@ public class AsnyTaskController extends AppBaseController {
 
 
     public void finishTask(UserTask userTask){
+        //第一次，或者第二次审核超时就算失败
+        if(userTask.getUserTaskStatus()==4||userTask.getUserTaskStatus()==8){
+            //减去商户的冻结金额
+            //增加用户的冻结金额
+            //添加历史记录表
+            SysUser business=sysUserService.queryUser(userTask.getBusinessUserId());
+            SysUser user=sysUserService.queryUser(userTask.getUserId());
 
+            business.setLockMoney();
+
+        }
     }
 }
