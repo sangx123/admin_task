@@ -10,6 +10,7 @@
       <result column="money" property="money" jdbcType="REAL" />
       <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
       <result column="name" property="name" jdbcType="VARCHAR" />
+      <result column="lock_money" property="lockMoney" jdbcType="REAL" />
     <association property="role" javaType="com.sangxiang.dao.model.SysRole">
       <id column="r_id" property="id" jdbcType="INTEGER" />
       <result column="role" property="role" jdbcType="VARCHAR" />

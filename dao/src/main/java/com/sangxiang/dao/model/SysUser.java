@@ -27,6 +27,16 @@ public class SysUser extends BaseEntity {
 
     private String name;
 
+    public Float getLockMoney() {
+        return lockMoney;
+    }
+
+    public void setLockMoney(Float lockMoney) {
+        this.lockMoney = lockMoney;
+    }
+
+    private Float lockMoney;
+
     public Integer getId() {
         return id;
     }
@@ -102,4 +112,6 @@ public class SysUser extends BaseEntity {
     public void setName(String name) {
         this.name = name;
     }
+
+
 }

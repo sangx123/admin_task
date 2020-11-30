@@ -35,4 +35,5 @@ public interface UserTaskMapper extends MyMapper<UserTask> {
 
     List<UserTask> getMyJieShouTaskShenHeFail(@Param("userid")int userid);
 
+    List<UserTask> asnyUserTaskTimeOut(@Param("userid")int userid);
 }

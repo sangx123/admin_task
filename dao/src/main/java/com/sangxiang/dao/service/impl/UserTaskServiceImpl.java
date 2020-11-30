@@ -10,6 +10,7 @@ import com.sangxiang.dao.model.BusinessTask;
 import com.sangxiang.dao.model.SysUser;
 import com.sangxiang.dao.model.UserTask;
 import com.sangxiang.dao.service.UserTaskService;
+import com.sangxiang.util.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +34,7 @@ import java.util.List;
         userTask.setUserId(userId);
         userTask.setUserTaskStatus(0);
         userTask.setUserApplyTaskTime(new Date());
+        userTask.setUserFirstSubmitTaskTimeout(DateUtils.stringToDateDefault(task.getWorkEndTime()));
         userTaskMapper.insertUseGeneratedKeys(userTask);
     }
 
@@ -104,5 +106,10 @@ import java.util.List;
     @Override
     public List<UserTask> getMyJieShouTaskShenHeFail(int userid) {
         return userTaskMapper.getMyJieShouTaskShenHeFail(userid);
+    }
+
+    @Override
+    public List<UserTask> asnyUserTaskTimeOut(int userid) {
+        return userTaskMapper.asnyUserTaskTimeOut(userid);
     }
 }

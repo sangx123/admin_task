@@ -71,4 +71,9 @@ public interface UserTaskService extends BaseService<UserTask> {
      */
     List<UserTask> getMyJieShouTaskShenHeFail(int userid);
 
+    /**
+     * 用户超时同步
+     */
+    List<UserTask> asnyUserTaskTimeOut(int userid);
+
 }
