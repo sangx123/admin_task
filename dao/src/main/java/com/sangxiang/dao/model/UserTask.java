@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Transient;
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class UserTask extends BaseEntity {
@@ -41,6 +42,15 @@ public class UserTask extends BaseEntity {
 
     private Integer userQuitTask;
 
+    public Boolean getFinished() {
+        return finished;
+    }
+
+    public void setFinished(Boolean finished) {
+        this.finished = finished;
+    }
+
+    private Boolean finished;
 
     public Integer getBusinessUserId() {
         return businessUserId;
@@ -50,6 +60,15 @@ public class UserTask extends BaseEntity {
         this.businessUserId = businessUserId;
     }
 
+    public BigDecimal getUserGetMoney() {
+        return userGetMoney;
+    }
+
+    public void setUserGetMoney(BigDecimal userGetMoney) {
+        this.userGetMoney = userGetMoney;
+    }
+
+    private BigDecimal userGetMoney;
     private Integer businessUserId;
 
     public Date getUserFirstSubmitTaskTimeout() {

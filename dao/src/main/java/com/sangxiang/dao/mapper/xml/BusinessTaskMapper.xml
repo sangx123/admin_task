@@ -18,6 +18,8 @@
         <result column="work_end_time" property="workEndTime" jdbcType="VARCHAR" />
         <result column="aduit_time" property="aduitTime" jdbcType="INTEGER" />
         <result column="orderId" property="orderid" jdbcType="VARCHAR" />
+        <result column="hasPayedMoney" jdbcType="DECIMAL" property="haspayedmoney" />
+        <result column="finished" jdbcType="BIT" property="finished" />
     </resultMap>
 
   <select id="queryById" parameterType="int" resultType="com.sangxiang.dao.model.BusinessTask">

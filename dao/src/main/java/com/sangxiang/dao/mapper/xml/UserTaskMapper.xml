@@ -17,10 +17,11 @@
         <result column="business_audit_second_time" property="businessAuditSecondTime" jdbcType="TIMESTAMP" />
         <result column="business_audit_second_result" property="businessAuditSecondResult" jdbcType="VARCHAR" />
         <result column="user_quit_task" property="userQuitTask" jdbcType="INTEGER" />
+        <result column="user_get_money" jdbcType="DECIMAL" property="userGetMoney" />
         <result column="name" property="name" jdbcType="VARCHAR" />
         <result column="user_first_submit_task_timeout" property="userFirstSubmitTaskTimeout" jdbcType="TIMESTAMP" />
         <result column="business_user_id" property="businessUserId" jdbcType="INTEGER" />
-
+        <result column="finished" jdbcType="BIT" property="finished" />
         <!--resultMap:
                         associattion 是关系 一个学生对象中包含有一个班级对象
 
@@ -211,13 +212,7 @@
     <!--根据usertaskId主键获取用户的一些信息 -->
     <!--用户任务列表-审核失败 -->
     <select id="asnyUserTaskTimeOut"  resultMap="BaseResultMap">
-        SELECT * from user_task WHERE user_id=#{userid} AND user_task_status=1 AND user_first_submit_task_timeout>NOW()
-        UNION
-        SELECT  * from user_task WHERE user_id=#{userid} AND user_task_status=3 AND DATEDIFF(NOW(),user_first_submit_task_time)>3
-        UNION
-        SELECT  * from user_task WHERE user_id=#{userid} AND user_task_status=6 AND DATEDIFF(NOW(),business_audit_first_time)>3
-        UNION
-        SELECT  * from user_task WHERE user_id=#{userid} AND user_task_status=7 AND DATEDIFF(NOW(),user_second_submit_task_time)>3
+        SELECT * from user_task WHERE user_id=#{userid} AND user_task_status>0 AND finished=0
     </select>
 
 </mapper>

@@ -38,4 +38,7 @@ public interface BusinessTaskService extends BaseService<BusinessTask> {
     PageInfo<BusinessTask> findUserPublishTaskList(Integer pageNumber, Integer pageSize, Integer state, int userId);
 
     PageInfo<BusinessTask> findAllUserPublishTaskList(Integer pageNumber, Integer pageSize, int userId, int state);
+
+
+
 }

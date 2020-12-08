@@ -44,6 +44,18 @@ public class BusinessTask extends BaseEntity {
 
     private String orderid;
 
+    private BigDecimal haspayedmoney;
+
+    public Boolean getFinished() {
+        return finished;
+    }
+
+    public void setFinished(Boolean finished) {
+        this.finished = finished;
+    }
+
+    private Boolean finished;
+
     public List<UserTask> getUserTaskList() {
         return userTaskList;
     }
@@ -181,5 +193,13 @@ public class BusinessTask extends BaseEntity {
 
     public void setOrderid(String orderid) {
         this.orderid = orderid == null ? null : orderid.trim();
+    }
+
+    public BigDecimal getHaspayedmoney() {
+        return haspayedmoney;
+    }
+
+    public void setHaspayedmoney(BigDecimal haspayedmoney) {
+        this.haspayedmoney = haspayedmoney;
     }
 }

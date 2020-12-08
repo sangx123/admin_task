@@ -56,7 +56,18 @@ public class DateUtils {
         DateTimeFormatter fmt = DateTimeFormat.forPattern(pattern);
         return fmt.parseLocalDateTime(strDate).toDate();
     }
+    /**
+     * 字符串转换成日期
+     * @param strDate 日期字符串
+     */
+    public static Date stringToDate(String strDate) {
+        if (StringUtils.isBlank(strDate)){
+            return null;
+        }
 
+        DateTimeFormatter fmt = DateTimeFormat.forPattern(DATE_TIME_PATTERN);
+        return fmt.parseLocalDateTime(strDate).toDate();
+    }
     /**
      * 字符串转换成日期
      * @param strDate 日期字符串

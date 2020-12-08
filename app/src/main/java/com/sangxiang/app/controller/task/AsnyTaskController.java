@@ -93,63 +93,6 @@ public class AsnyTaskController extends AppBaseController {
 
     @Autowired
     TaskMainTypeService taskMainTypeService;
-    @PostMapping("/asnyBusinessTaskTimeOut")
-    public AppResult<String> asnyBusinessTaskTimeOut(@RequestHeader("userToken") String userToken) {
-        int userId = UserTokenManager.getInstance().getUserIdFromToken(userToken).intValue();
-        return success("");
-//        content=convertUpLoadFileAndContent(files,content);
-//        if(content.equals("0")){
-//            return  fail(AppExecStatus.FAIL,"图片上传失败，请重新提交任务");
-//        }
-//        BusinessTask businessTask=new BusinessTask();
-//        businessTask.setTitle(title);
-//        businessTask.setContent(content);
-//        businessTask.setCreateTime(DateUtils.format(new Date(),DateUtils.DATE_TIME_PATTERN));
-//        businessTask.setUserid(userId);
-//        businessTask.setTypeid(type);
-//        businessTask.setTaskLimit(limit);
-//        businessTask.setWorkEndTime(work_end_time);
-//        businessTask.setApplyEndTime(apply_end_time);
-//
-//        businessTask.setWorkerPrice(new BigDecimal(jiangLi));
-//        businessTask.setNeedpeoplenum(Integer.valueOf(peopleNum));
-//        businessTask.setStatus(3);//支付完成就是任务进行中吧
-//
-//        //创建支付订单
-//        //实例化客户端
-//        AlipayClient alipayClient = new DefaultAlipayClient(alipayUrl, alipayAppID, alipayPrivateKey, "json", "UTF-8", alipayPublicKey, alipaySignType);
-//        //实例化具体API对应的request类,类名称和接口名称对应,当前调用接口名称：alipay.trade.app.pay
-//        AlipayTradeAppPayRequest request = new AlipayTradeAppPayRequest();
-//        //SDK已经封装掉了公共参数，这里只需要
-//
-//        // 传入业务参数。以下方法为sdk的model入参方式(model和biz_content同时存在的情况下取biz_content)。
-//        AlipayTradeAppPayModel model = new AlipayTradeAppPayModel();
-//        String tradeNo= DateUtils.format(new Date(),"yyyyMMddHHmmssSSS")+userId;
-//        String name="心享-"+tradeNo;
-//        model.setBody("心享-用户订单");
-//        model.setSubject(name);
-//        model.setOutTradeNo(tradeNo);
-//        model.setTimeoutExpress(alipayTimeoutExpress);
-//        model.setTotalAmount(String.valueOf(businessTask.getWorkerPrice().floatValue() * businessTask.getNeedpeoplenum()));
-//        model.setProductCode(alipayProductCode);
-//        request.setBizModel(model);
-//        request.setNotifyUrl(alipayNotifyUrl);
-//        try {
-//            //这里和普通的接口调用不同，使用的是sdkExecute
-//            AlipayTradeAppPayResponse response = alipayClient.sdkExecute(request);
-//            System.out.println(response.getBody());//就是orderString 可以直接给客户端请求，无需再做处理。
-//            //在真正生成订单的时候才创建任务
-//            businessTask.setOrderid(tradeNo);
-//            businessTask.setNeedtotalpay(new BigDecimal(businessTask.getWorkerPrice().doubleValue() * businessTask.getNeedpeoplenum().doubleValue()));
-//            businessTask.setPayStatus(0);
-//            businessTask.setAduitTime(2);
-//            businessTaskService.createTask(businessTask);
-//            return success(response.getBody());
-//        } catch (AlipayApiException e) {
-//            e.printStackTrace();
-//            return fail(AppExecStatus.FAIL, "订单生成失败！");
-//        }
-    }
 
     @PostMapping("/asnyUserTaskTimeOut")
     //    1，我领取的任务超时
@@ -162,55 +105,170 @@ public class AsnyTaskController extends AppBaseController {
     //      1.4 用户审核失败-可申诉状态
     public AppResult<String> asnyUserTaskTimeOut(@RequestHeader("userToken") String userToken) {
         int userId = UserTokenManager.getInstance().getUserIdFromToken(userToken).intValue();
-        List<UserTask> timeoutList=userTaskService.asnyUserTaskTimeOut(userId);
-        if(timeoutList!=null&&timeoutList.size()>0) {
-            for (int i = 0; i < timeoutList.size(); i++) {
-                //用户提交超时
-                if (timeoutList.get(i).getUserTaskStatus()==1){
-                    timeoutList.get(i).setUserTaskStatus(2);
-                    userTaskService.updateSelective(timeoutList.get(i));
+        //先获取用户领取的任务并同步
+        //sql查询数据的好处，不用查询已结束的
+        //查询用户所有未完成的任务
+        userAsycTask(userId);
 
-                }
+        //作为商家一个个任务去结束
+        List<BusinessTask> list= businessTaskService.getShanhuTask(userId,3);
 
-                //商户审核超时--算作用户完成任务
-                if (timeoutList.get(i).getUserTaskStatus()==3){
-                    timeoutList.get(i).setUserTaskStatus(4);
-                    userTaskService.updateSelective(timeoutList.get(i));
-                    finishTask(timeoutList.get(i));
-
-                }
-
-                //用户申诉超时-我的任务结束
-                if (timeoutList.get(i).getUserTaskStatus()==6){
-                    timeoutList.get(i).setUserTaskStatus(11);
-                    userTaskService.updateSelective(timeoutList.get(i));
-
-                }
-                //商户审核申诉超时--算作用户完成任务
-                if (timeoutList.get(i).getUserTaskStatus()==7){
-                    timeoutList.get(i).setUserTaskStatus(8);
-                    userTaskService.updateSelective(timeoutList.get(i));
-                    finishTask(timeoutList.get(i));
-                }
-
-            }
+        for (int i = 0; i <list.size() ; i++) {
+            businessAsycTask(list.get(i));
         }
-        return success("数据同步完成");
+
+
+        return success("接收任务数据同步完成");
 
     }
 
 
+
+    //超时任务，增加用户的金币，并添加用户金币变化表
     public void finishTask(UserTask userTask){
+        BusinessTask businessTask=businessTaskService.queryById(userTask.getBusinessTaskId());
+        finishTask(userTask,businessTask);
+    }
+    //超时任务，增加用户的金币，并添加用户金币变化表
+    public void finishTask(UserTask userTask,BusinessTask businessTask){
         //第一次，或者第二次审核超时就算失败
-        if(userTask.getUserTaskStatus()==4||userTask.getUserTaskStatus()==8){
-            //减去商户的冻结金额
-            //增加用户的冻结金额
-            //添加历史记录表
-            SysUser business=sysUserService.queryUser(userTask.getBusinessUserId());
+        //此处只是用来判断用户的获取金额是否已经完成-重新获取下最新的数据
+        UserTask userTaskMoney=userTaskService.queryUserTaskById(userTask.getId().intValue());
+        if(userTask.getUserTaskStatus()==4||userTask.getUserTaskStatus()==8&&!userTaskMoney.getFinished()){
+            //修改商户任务已支付金额
+            businessTask.setHaspayedmoney(businessTask.getWorkerPrice().add(businessTask.getHaspayedmoney()));
+            businessTaskService.updateSelective(businessTask);
+            //修改用户任务金额并更新,并设置用户任务已完成
+            userTask.setUserGetMoney(businessTask.getWorkerPrice());
+            userTask.setFinished(true);
+            userTaskService.updateSelective(userTask);
+            //修改用户金额并更新
             SysUser user=sysUserService.queryUser(userTask.getUserId());
+            user.setMoney(user.getMoney()+userTask.getUserGetMoney().floatValue());
+            sysUserService.updateSelective(user);
+        }
+    }
+    //商人发布的任务列表的同步
+    public void businessAsycTask(BusinessTask businessTask){
 
-            business.setLockMoney();
+        //      1.1 待提交任务超时：用户待提交超过了任务截止时间(任务提交超时，用户可进行任务提交超时申诉)（任务完成超时，已结束）
+        //          查找数据库中我的任务状态是1，且超过任务提交时间的将状态改成2
+        //      1.2 商户审核超时完成(任务状态为已完成，用户总金额+任务奖励)(用户查询审核状态的时候，超时就设置任务状态为商户审核超时，或者商家查询任务状态的时候，超时就设置为申请超时)
+        //          查找数据库中我的任务状态是3，且超过任务审核时间3天 将任务状态改成4，将用户任务状态改成已完成，并修改用户余额
+        //      1.3 商户超时未审核申诉 (任务已完成，用户总金额+任务奖励)
+        //          查找数据库中我的任务状态是7，且超过任务审核时间3天 将任务状态改成8，将用户任务状态改成已完成，并修改用户余额
+        //      1.4 用户审核失败-可申诉状态
 
+        List<UserTask> userTaskList=userTaskService.queryUserTaskListByBusinessTaskId(businessTask.getId());
+        if(userTaskList==null||userTaskList.size()==0)return;
+
+        for (int i = 0; i <userTaskList.size() ; i++) {
+            UserTask item=userTaskList.get(i);
+            //用户提交超时
+            if(item.getUserTaskStatus()==1){
+                //如果任务截止时间在当前时间之前的话
+                //提交超时，任务结束，状态任务状态2，只更改状态
+                if(item.getUserFirstSubmitTaskTimeout().before(new Date())){
+                    item.setUserTaskStatus(2);
+                    item.setFinished(true);
+                    userTaskService.updateSelective(item);
+                }
+
+            }
+
+            //商家审核超时,更改卖家和商家信息
+            //审核超时，任务状态4，任务结束，更改用户金币_扣除任务余额
+            if (item.getUserTaskStatus()==3){
+
+                //如果用户第一次提交的时间时间加上3天，在今天之前表示审核超时
+                if(DateUtils.addDateDays(item.getUserFirstSubmitTaskTime(),3).before(new Date())){
+                    item.setUserTaskStatus(4);
+                    userTaskService.updateSelective(item);
+                    finishTask(item, businessTask);
+                }
+            }
+            //此处给审核失败的用户3天的时间去申诉
+            //用户申诉超时-任务状态11，任务结束，只更改状态
+            if (item.getUserTaskStatus()==6){
+                //如果用户审核时间加上3天在当前3天的时间的话标示已完成
+                if(DateUtils.addDateDays(item.getBusinessAuditFirstTime(),3).before(new Date())){
+                    item.setUserTaskStatus(11);
+                    item.setFinished(true);
+                    userTaskService.updateSelective(item);
+                }
+
+            }
+
+            //商户第二次审核超时
+            //商户二次审核超时-任务结束，更改用户金币_扣除任务余额
+            if (userTaskList.get(i).getUserTaskStatus()==7){
+                if(DateUtils.addDateDays(item.getUserSecondSubmitTaskTime(),3).before(new Date())){
+                    item.setUserTaskStatus(8);
+                    userTaskService.updateSelective(item);
+                    finishTask(item,businessTask);
+                }
+            }
+        }
+    }
+
+    public void userAsycTask(int  userId){
+        List<UserTask> userTaskList=userTaskService.asnyUserTaskTimeOut(userId);
+        //      1.1 待提交任务超时：用户待提交超过了任务截止时间(任务提交超时，用户可进行任务提交超时申诉)（任务完成超时，已结束）
+        //          查找数据库中我的任务状态是1，且超过任务提交时间的将状态改成2
+        //      1.2 商户审核超时完成(任务状态为已完成，用户总金额+任务奖励)(用户查询审核状态的时候，超时就设置任务状态为商户审核超时，或者商家查询任务状态的时候，超时就设置为申请超时)
+        //          查找数据库中我的任务状态是3，且超过任务审核时间3天 将任务状态改成4，将用户任务状态改成已完成，并修改用户余额
+        //      1.3 商户超时未审核申诉 (任务已完成，用户总金额+任务奖励)
+        //          查找数据库中我的任务状态是7，且超过任务审核时间3天 将任务状态改成8，将用户任务状态改成已完成，并修改用户余额
+        //      1.4 用户审核失败-可申诉状态
+
+        if(userTaskList==null||userTaskList.size()==0)return;
+
+        for (int i = 0; i <userTaskList.size() ; i++) {
+            UserTask item=userTaskList.get(i);
+            //用户提交超时
+            if(item.getUserTaskStatus()==1){
+                //如果任务截止时间在当前时间之前的话
+                //提交超时，任务结束，状态任务状态2，只更改状态
+                if(item.getUserFirstSubmitTaskTimeout().before(new Date())){
+                    item.setUserTaskStatus(2);
+                    item.setFinished(true);
+                    userTaskService.updateSelective(item);
+                }
+
+            }
+
+            //商家审核超时,更改卖家和商家信息
+            //审核超时，任务状态4，任务结束，更改用户金币_扣除任务余额
+            if (item.getUserTaskStatus()==3){
+
+                //如果用户第一次提交的时间时间加上3天，在今天之前表示审核超时
+                if(DateUtils.addDateDays(item.getUserFirstSubmitTaskTime(),3).before(new Date())){
+                    item.setUserTaskStatus(4);
+                    userTaskService.updateSelective(item);
+                    finishTask(item);
+                }
+            }
+            //此处给审核失败的用户3天的时间去申诉
+            //用户申诉超时-任务状态11，任务结束，只更改状态
+            if (item.getUserTaskStatus()==6){
+                //如果用户审核时间加上3天在当前3天的时间的话标示已完成
+                if(DateUtils.addDateDays(item.getBusinessAuditFirstTime(),3).before(new Date())){
+                    item.setUserTaskStatus(11);
+                    item.setFinished(true);
+                    userTaskService.updateSelective(item);
+                }
+
+            }
+
+            //商户第二次审核超时
+            //商户二次审核超时-任务结束，更改用户金币_扣除任务余额
+            if (userTaskList.get(i).getUserTaskStatus()==7){
+                if(DateUtils.addDateDays(item.getUserSecondSubmitTaskTime(),3).before(new Date())){
+                    item.setUserTaskStatus(8);
+                    userTaskService.updateSelective(item);
+                    finishTask(item);
+                }
+            }
         }
     }
 }
