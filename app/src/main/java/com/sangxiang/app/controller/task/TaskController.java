@@ -121,10 +121,17 @@ public class TaskController extends AppBaseController {
                                         int type,//任务类型,
                                         String apply_end_time,//任务申请截止时间
                                         String work_end_time,//提交任务截止时间
-                                        String limit
+                                        String limit,
+                                        String mUUID
 
     ) {
         int userId = UserTokenManager.getInstance().getUserIdFromToken(userToken).intValue();
+        //从数据库获取uuid，看订单是否存在
+        BusinessTask mBusinessTask=businessTaskService.getTaskByUUID(mUUID);
+        if(mBusinessTask!=null){
+            return fail(AppExecStatus.FAIL, "订单已创建，请重新打开界面创建订单！");
+        }
+
         content=convertUpLoadFileAndContent(files,content);
         if(content.equals("0")){
             return  fail(AppExecStatus.FAIL,"图片上传失败，请重新提交任务");

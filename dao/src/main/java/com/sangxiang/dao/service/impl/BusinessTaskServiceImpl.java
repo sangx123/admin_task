@@ -70,5 +70,10 @@ public class BusinessTaskServiceImpl extends BaseServiceImpl<BusinessTask> imple
         return new PageInfo<>(list);
     }
 
+    @Override
+    public BusinessTask getTaskByUUID(String mUUID) {
+        return businessTaskMapper.getTaskByUUID(mUUID);
+    }
+
 
 }

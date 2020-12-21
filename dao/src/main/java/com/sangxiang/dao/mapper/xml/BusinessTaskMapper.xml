@@ -20,6 +20,7 @@
         <result column="orderId" property="orderid" jdbcType="VARCHAR" />
         <result column="hasPayedMoney" jdbcType="DECIMAL" property="haspayedmoney" />
         <result column="finished" jdbcType="BIT" property="finished" />
+        <result column="m_uuid" jdbcType="VARCHAR" property="mUuid" />
     </resultMap>
 
   <select id="queryById" parameterType="int" resultType="com.sangxiang.dao.model.BusinessTask">
@@ -56,5 +57,7 @@
         by create_time desc
     </select>
 
-
+    <select id="getTaskByUUID"  resultType="com.sangxiang.dao.model.BusinessTask">
+        select * from business_task where  m_uuid=#{uuid}
+    </select>
 </mapper>

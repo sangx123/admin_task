@@ -46,6 +46,16 @@ public class BusinessTask extends BaseEntity {
 
     private BigDecimal haspayedmoney;
 
+    public String getmUuid() {
+        return mUuid;
+    }
+
+    public void setmUuid(String mUuid) {
+        this.mUuid = mUuid;
+    }
+
+    private String mUuid;
+
     public Boolean getFinished() {
         return finished;
     }

@@ -40,5 +40,5 @@ public interface BusinessTaskService extends BaseService<BusinessTask> {
     PageInfo<BusinessTask> findAllUserPublishTaskList(Integer pageNumber, Integer pageSize, int userId, int state);
 
 
-
+    BusinessTask getTaskByUUID(String mUUID);
 }

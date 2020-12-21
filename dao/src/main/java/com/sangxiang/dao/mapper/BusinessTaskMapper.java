@@ -14,4 +14,5 @@ public interface BusinessTaskMapper extends MyMapper<BusinessTask> {
     List<BusinessTask> getUserPublishTask(@Param("userid")int userid, @Param("status")int status);
     List<BusinessTask> getAllUserPublishTask(@Param("userid")int userid, @Param("status")int status);
     List<BusinessTask> getHomeBusinessTaskPageList(@Param("status")int status,@Param("typeId")int typeId);
+    BusinessTask getTaskByUUID(@Param("uuid")String mUUID);
 }
