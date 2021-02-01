@@ -5,7 +5,7 @@ server:
 spring:
   datasource:
      driver-class-name: com.mysql.cj.jdbc.Driver
-     url: jdbc:mysql://127.0.0.1:3306/task_sys?characterEncoding=UTF-8&serverTimezone=CTT
+     url: jdbc:mysql://81.70.149.138:3306/task_sys?characterEncoding=UTF-8&serverTimezone=CTT
      #url: jdbc:mysql://39.105.172.56:3306/task_sys?characterEncoding=UTF-8&serverTimezone=CTT
      username: root
      password: Sx828221*#
@@ -13,8 +13,8 @@ spring:
   redis:
     cluster:
       #nodes: 188.131.235.188:7000,188.131.235.188:7001,188.131.235.188:7002,188.131.235.188:7003,188.131.235.188:7004,188.131.235.188:7005
-      #nodes: 39.105.172.56:7001,39.105.172.56:7002,39.105.172.56:7003,39.105.172.56:7004,39.105.172.56:7005,39.105.172.56:7006
-      nodes: 127.0.0.1:7001,127.0.0.1:7002,127.0.0.1:7003,127.0.0.1:7004,127.0.0.1:7005,127.0.0.1:7006
+      nodes: 81.70.149.138:7001,81.70.149.138:7002,81.70.149.138:7003,81.70.149.138:7004,81.70.149.138:7005,81.70.149.138:7006
+      #nodes: 127.0.0.1:7001,127.0.0.1:7002,127.0.0.1:7003,127.0.0.1:7004,127.0.0.1:7005,127.0.0.1:7006
     password:
 
 #mybatis的配置
@@ -53,7 +53,7 @@ upload:
     #imagePath: /usr/local/nginx/html/images/
 
     #正式服务器上的图片路径
-    imageURL: http://192.168.0.53/
+    imageURL: http://81.70.149.138/
 
     #mac上的本地路径
 

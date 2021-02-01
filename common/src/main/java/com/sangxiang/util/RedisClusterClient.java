@@ -29,7 +29,9 @@ public class RedisClusterClient {
     public String set(String key, Object value, int expire) {
         String jsonObject = JSON.toJSONString(value);
         logger.info("放入redis 缓存key："+key+". velue:"+jsonObject);
-        return jedisCluster.setex(key, expire, jsonObject);
+        // NX是不存在时才set， XX是存在时才set， EX是秒，PX是毫秒,此处移除redis缓存失效时间
+        //return jedisCluster.setex(key, expire, jsonObject);
+        return jedisCluster.set(key,jsonObject);
     }
 
     public String buffer(String key, Object value) {
