@@ -134,7 +134,7 @@ public class AsnyTaskController extends AppBaseController {
         //第一次，或者第二次审核超时就算失败
         //此处只是用来判断用户的获取金额是否已经完成-重新获取下最新的数据
         UserTask userTaskMoney=userTaskService.queryUserTaskById(userTask.getId().intValue());
-        if(userTask.getUserTaskStatus()==4||userTask.getUserTaskStatus()==8&&!userTaskMoney.getFinished()){
+        if(userTask.getUserTaskStatus()==4||userTask.getUserTaskStatus()==8&&!userTaskMoney.getFinished()&&businessTask.getHaspayedmoney()!=null){
             //修改商户任务已支付金额
             businessTask.setHaspayedmoney(businessTask.getWorkerPrice().add(businessTask.getHaspayedmoney()));
             businessTaskService.updateSelective(businessTask);
@@ -165,7 +165,7 @@ public class AsnyTaskController extends AppBaseController {
         for (int i = 0; i <userTaskList.size() ; i++) {
             UserTask item=userTaskList.get(i);
             //用户提交超时
-            if(item.getUserTaskStatus()==1){
+            if(item.getUserTaskStatus()==1&&item.getUserFirstSubmitTaskTimeout()!=null){
                 //如果任务截止时间在当前时间之前的话
                 //提交超时，任务结束，状态任务状态2，只更改状态
                 if(item.getUserFirstSubmitTaskTimeout().before(new Date())){
@@ -178,7 +178,7 @@ public class AsnyTaskController extends AppBaseController {
 
             //商家审核超时,更改卖家和商家信息
             //审核超时，任务状态4，任务结束，更改用户金币_扣除任务余额
-            if (item.getUserTaskStatus()==3){
+            if (item.getUserTaskStatus()==3&&item.getUserFirstSubmitTaskTime()!=null){
 
                 //如果用户第一次提交的时间时间加上3天，在今天之前表示审核超时
                 if(DateUtils.addDateDays(item.getUserFirstSubmitTaskTime(),3).before(new Date())){
@@ -189,7 +189,7 @@ public class AsnyTaskController extends AppBaseController {
             }
             //此处给审核失败的用户3天的时间去申诉
             //用户申诉超时-任务状态11，任务结束，只更改状态
-            if (item.getUserTaskStatus()==6){
+            if (item.getUserTaskStatus()==6&&item.getBusinessAuditFirstTime()!=null){
                 //如果用户审核时间加上3天在当前3天的时间的话标示已完成
                 if(DateUtils.addDateDays(item.getBusinessAuditFirstTime(),3).before(new Date())){
                     item.setUserTaskStatus(11);
@@ -201,7 +201,7 @@ public class AsnyTaskController extends AppBaseController {
 
             //商户第二次审核超时
             //商户二次审核超时-任务结束，更改用户金币_扣除任务余额
-            if (userTaskList.get(i).getUserTaskStatus()==7){
+            if (userTaskList.get(i).getUserTaskStatus()==7&&item.getUserSecondSubmitTaskTime()!=null){
                 if(DateUtils.addDateDays(item.getUserSecondSubmitTaskTime(),3).before(new Date())){
                     item.setUserTaskStatus(8);
                     userTaskService.updateSelective(item);
@@ -222,11 +222,10 @@ public class AsnyTaskController extends AppBaseController {
         //      1.4 用户审核失败-可申诉状态
 
         if(userTaskList==null||userTaskList.size()==0)return;
-
         for (int i = 0; i <userTaskList.size() ; i++) {
             UserTask item=userTaskList.get(i);
             //用户提交超时
-            if(item.getUserTaskStatus()==1){
+            if(item.getUserTaskStatus()==1&&item.getUserFirstSubmitTaskTimeout()!=null){
                 //如果任务截止时间在当前时间之前的话
                 //提交超时，任务结束，状态任务状态2，只更改状态
                 if(item.getUserFirstSubmitTaskTimeout().before(new Date())){
@@ -239,7 +238,7 @@ public class AsnyTaskController extends AppBaseController {
 
             //商家审核超时,更改卖家和商家信息
             //审核超时，任务状态4，任务结束，更改用户金币_扣除任务余额
-            if (item.getUserTaskStatus()==3){
+            if (item.getUserTaskStatus()==3&&item.getUserFirstSubmitTaskTime()!=null){
 
                 //如果用户第一次提交的时间时间加上3天，在今天之前表示审核超时
                 if(DateUtils.addDateDays(item.getUserFirstSubmitTaskTime(),3).before(new Date())){
@@ -250,7 +249,7 @@ public class AsnyTaskController extends AppBaseController {
             }
             //此处给审核失败的用户3天的时间去申诉
             //用户申诉超时-任务状态11，任务结束，只更改状态
-            if (item.getUserTaskStatus()==6){
+            if (item.getUserTaskStatus()==6&&item.getBusinessAuditFirstTime()!=null){
                 //如果用户审核时间加上3天在当前3天的时间的话标示已完成
                 if(DateUtils.addDateDays(item.getBusinessAuditFirstTime(),3).before(new Date())){
                     item.setUserTaskStatus(11);
@@ -262,7 +261,7 @@ public class AsnyTaskController extends AppBaseController {
 
             //商户第二次审核超时
             //商户二次审核超时-任务结束，更改用户金币_扣除任务余额
-            if (userTaskList.get(i).getUserTaskStatus()==7){
+            if (userTaskList.get(i).getUserTaskStatus()==7&&item.getUserSecondSubmitTaskTime()!=null){
                 if(DateUtils.addDateDays(item.getUserSecondSubmitTaskTime(),3).before(new Date())){
                     item.setUserTaskStatus(8);
                     userTaskService.updateSelective(item);
