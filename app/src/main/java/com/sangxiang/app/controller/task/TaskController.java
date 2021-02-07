@@ -129,7 +129,9 @@ public class TaskController extends AppBaseController {
         //从数据库获取uuid，看订单是否存在
         BusinessTask mBusinessTask=businessTaskService.getTaskByUUID(mUUID);
         if(mBusinessTask!=null){
-            return fail(AppExecStatus.FAIL, "订单已创建，请重新打开界面创建订单！");
+            if(DateUtils.addDateMinutes(mBusinessTask.getOrderCreateTime(),30).after(new Date())) {
+                return success(mBusinessTask.getOrderInfo());
+            }
         }
 
         content=convertUpLoadFileAndContent(files,content);
@@ -145,7 +147,7 @@ public class TaskController extends AppBaseController {
         businessTask.setTaskLimit(limit);
         businessTask.setWorkEndTime(work_end_time);
         businessTask.setApplyEndTime(apply_end_time);
-
+        businessTask.setmUuid(mUUID);
         businessTask.setWorkerPrice(new BigDecimal(jiangLi));
         businessTask.setNeedpeoplenum(Integer.valueOf(peopleNum));
         businessTask.setStatus(3);//支付完成就是任务进行中吧
@@ -178,6 +180,8 @@ public class TaskController extends AppBaseController {
             businessTask.setNeedtotalpay(new BigDecimal(businessTask.getWorkerPrice().doubleValue() * businessTask.getNeedpeoplenum().doubleValue()));
             businessTask.setPayStatus(0);
             businessTask.setAduitTime(2);
+            businessTask.setOrderInfo(response.getBody());
+            businessTask.setOrderCreateTime(new Date());
             businessTaskService.createTask(businessTask);
             return success(response.getBody());
         } catch (AlipayApiException e) {

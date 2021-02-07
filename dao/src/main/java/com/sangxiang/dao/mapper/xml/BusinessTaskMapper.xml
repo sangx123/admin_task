@@ -21,6 +21,8 @@
         <result column="hasPayedMoney" jdbcType="DECIMAL" property="haspayedmoney" />
         <result column="finished" jdbcType="BIT" property="finished" />
         <result column="m_uuid" jdbcType="VARCHAR" property="mUuid" />
+        <result column="order_info" jdbcType="VARCHAR" property="orderInfo" />
+        <result column="order_create_time" jdbcType="TIMESTAMP" property="orderCreateTime" />
     </resultMap>
 
   <select id="queryById" parameterType="int" resultType="com.sangxiang.dao.model.BusinessTask">

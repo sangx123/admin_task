@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 public class BusinessTask extends BaseEntity {
@@ -56,6 +57,19 @@ public class BusinessTask extends BaseEntity {
 
     private String mUuid;
 
+
+
+    private String orderInfo;
+
+    public Date getOrderCreateTime() {
+        return orderCreateTime;
+    }
+
+    public void setOrderCreateTime(Date orderCreateTime) {
+        this.orderCreateTime = orderCreateTime;
+    }
+
+    private Date orderCreateTime;
     public Boolean getFinished() {
         return finished;
     }
@@ -211,5 +225,13 @@ public class BusinessTask extends BaseEntity {
 
     public void setHaspayedmoney(BigDecimal haspayedmoney) {
         this.haspayedmoney = haspayedmoney;
+    }
+
+    public String getOrderInfo() {
+        return orderInfo;
+    }
+
+    public void setOrderInfo(String orderInfo) {
+        this.orderInfo = orderInfo;
     }
 }
