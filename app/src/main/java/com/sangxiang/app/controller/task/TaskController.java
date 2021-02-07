@@ -56,11 +56,9 @@ import static com.alipay.api.AlipayConstants.CHARSET;
 public class TaskController extends AppBaseController {
 
     private static final Logger logger = Logger.getLogger(TaskController.class.getName());
-    // token 过期时间， 默认2小时后过期
     @Value("${upload.imagePath}")
     private String imagePath;
 
-    // token 过期时间， 默认2小时后过期
     @Value("${upload.imageURL}")
     private String imageURL;
 
