@@ -20,6 +20,7 @@ import com.sangxiang.base.rest.ApiResult;
 import com.sangxiang.dao.model.*;
 import com.sangxiang.dao.service.*;
 import com.sangxiang.model.ApplyTaskParam;
+import com.sangxiang.model.Login.HomeSearchTaskParam;
 import com.sangxiang.model.Login.HomeTaskParam;
 import com.sangxiang.model.Task.TaskItem;
 import com.sangxiang.model.Task.TaskParam;
@@ -220,6 +221,18 @@ public class TaskController extends AppBaseController {
     public AppResult<PageInfo<BusinessTask>> getHomeBusinessTaskList(@RequestHeader("userToken") String userToken,@RequestBody HomeTaskParam param){
         //int userId = UserTokenManager.getInstance().getUserIdFromToken(userToken).intValue();
         PageInfo<BusinessTask> pageInfo= businessTaskService.geHomeBusinessTaskPageList(param.getPageNumber(),param.getPageSize(),param.getStatus(),param.getType());
+        return success(pageInfo);
+    }
+
+
+    @PostMapping(value = "/getHomeSearchResultBusinessTaskList")
+    @ApiOperation(value="搜索获取大厅任务列表")
+    //分页，
+    //任务状态，进行中的任务状态3，目前暂时手动操作为0
+    //
+    public AppResult<PageInfo<BusinessTask>> getHomeSearchResultBusinessTaskList(@RequestHeader("userToken") String userToken,@RequestBody HomeSearchTaskParam param){
+        //int userId = UserTokenManager.getInstance().getUserIdFromToken(userToken).intValue();
+        PageInfo<BusinessTask> pageInfo= businessTaskService.getSearchResult(param.getContent(),param.getPageNumber(),param.getPageSize());
         return success(pageInfo);
     }
 

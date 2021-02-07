@@ -39,6 +39,14 @@
         by create_time desc
     </select>
 
+
+    <select id="getSearchResult"  resultType="com.sangxiang.dao.model.BusinessTask">
+       SELECT * from
+        business_task  WHERE title like concat('%','${content}','%')
+        order
+        by create_time desc
+    </select>
+
   <select id="getUserPublishTask"  resultType="com.sangxiang.dao.model.BusinessTask">
        SELECT * from
         business_task where userid = #{userid} AND status=#{status}
