@@ -54,7 +54,7 @@
     </select>
     <select id="getHomeBusinessTaskPageList"  resultType="com.sangxiang.dao.model.BusinessTask">
        SELECT * from
-        business_task where typeId = #{typeId} AND status=#{status}
+        business_task where typeId = #{typeId} AND status=#{status} AND  apply_end_time>NOW()
         order
         by create_time desc
     </select>

@@ -290,6 +290,9 @@ public class TaskController extends AppBaseController {
         if(task.getUserid()==userId){
             return fail(AppExecStatus.FAIL,"自己不能申请自己发布的任务!");
         }
+        if(DateUtils.stringToDate(task.getApplyEndTime()).before(new Date())){
+            return fail(AppExecStatus.FAIL,"已超过任务申请截止时间！");
+        }
         if(task.getStatus()!=3){
             return fail(AppExecStatus.FAIL,"任务未开始，或者已结束");
         }
