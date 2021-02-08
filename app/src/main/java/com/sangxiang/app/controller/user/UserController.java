@@ -83,8 +83,9 @@ public class UserController extends AppBaseController {
         }
         String avater=convertUpLoadFileAndContent(files);
         SysUser userInfo= sysUserMapper.getUserInfo(userId);
+        userInfo.setAvatar(avater);
         sysUserService.updateSelective(userInfo);
-        return success("修改成功!");
+        return success(avater);
 
     }
 

@@ -96,7 +96,15 @@ public class SysUser extends BaseEntity {
     @Transient
     private  SysRole role;
 
+    public String getAvatar() {
+        return avatar;
+    }
 
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    private String avatar;
     public SysRole getRole() {
         return role;
     }

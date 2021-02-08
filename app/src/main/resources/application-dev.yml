@@ -49,11 +49,12 @@ upload:
     #imagePath:  C:/Users/sangxiang/Downloads/nginx-1.15.10/nginx-1.15.10/html/images/
     #mac上的路径
     imagePath: /Users/sangxiang/Desktop/web/
+    #imagePath: /usr/local/nginx/html/
     #linux服务器上的路径
     #imagePath: /usr/local/nginx/html/images/
 
     #正式服务器上的图片路径
-    imageURL: http://81.70.149.138/
+    imageURL: http://192.168.0.53/
 
     #mac上的本地路径
 
