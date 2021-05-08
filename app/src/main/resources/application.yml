@@ -1,8 +1,8 @@
 spring:
  #激活哪一个环境的配置文件
   profiles:
-    active: dev
-    #active: pro
+    #active: dev
+    active: pro
   jackson:
     # 属性为NULL 不序列化
     default-property-inclusion: non_null

@@ -10,6 +10,8 @@ public enum ApiExecStatus {
     FAIL(-1, "操作失败"),
     //-----参数问题
     INVALID_PARAM(1000, "参数不合法"),
+
+    NO_FILE(10001, "今日程序还没开始运行"),
     //-----数据验证问题
 
      DAO_ERR(6000, "数据访问失败！"),

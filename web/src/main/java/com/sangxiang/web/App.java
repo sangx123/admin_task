@@ -4,6 +4,7 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @MapperScan(basePackages ="com.sangxiang.dao.mapper" , markerInterface = MyMapper.class)
 //mybaties时候出错
 @ComponentScan(basePackages = {"com.sangxiang.dao", "com.sangxiang.web"})
+@EnableScheduling
 public class App {
     public static void main(String[] args) {
         SpringApplication.run(App.class, args);

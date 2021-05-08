@@ -62,9 +62,13 @@ public class ShiroConfig {
         filterMap.put("/alipay", "anon");
        //filterMap.put("/checkAlipay", "anon");
         filterMap.put("/", "anon");
+        filterMap.put("/getxingtaitwo", "anon");
+
+
         //需要已认证
         filterMap.put("/**", "oauth2");
         //filterMap.put("/**", "anon");
+
 
         // 如果不设置默认会自动寻找Web工程根目录下的"/login.jsp"页面
 //        shiroFilter.setLoginUrl("/login");
